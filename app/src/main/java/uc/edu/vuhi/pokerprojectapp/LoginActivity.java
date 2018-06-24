@@ -74,8 +74,16 @@ public class LoginActivity extends AppCompatActivity {
                             });
                 }
                 else{
-                    Toast.makeText(LoginActivity.this, "Please fill in your email or password", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LoginActivity.this, "Please fill in the fields", Toast.LENGTH_SHORT).show();
                 }
+            }
+        });
+
+        btnRegister.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent registerIntent = new Intent(LoginActivity.this, RegisterActivity.class);
+                startActivity(registerIntent);
             }
         });
     }
@@ -92,7 +100,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void sendToMainActivity(){
-        Intent mainIntent = new Intent(this, MainActivity.class);
+        Intent mainIntent = new Intent(LoginActivity.this, MainActivity.class);
         startActivity(mainIntent);
         finish();
     }

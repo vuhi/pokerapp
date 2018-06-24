@@ -5,4 +5,9 @@
     <string name="txtPassword">Password...</string>
     <string name="btnLogin">LOGIN TO ACCOUNT</string>
     <string name="btnRegister">NEED A ACCOUNT?</string>
+    <string name="logout">Logout</string>
+    <string name="txtConfirmPassword">Confirm Password...</string>
+    <string name="btnCreateNewAccount">Create New Account</string>
+    <string name="btnAlreadyHaveAccount">Already Have Account?</string>
+    <string name="btnAccountSetting">Account Setting</string>
 </resources>
