@@ -29,6 +29,7 @@
         android:ems="10"
         android:hint="@string/txtEmail"
         android:inputType="textEmailAddress"
+        android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageLogo" />
@@ -43,6 +44,7 @@
         android:ems="10"
         android:hint="@string/txtPassword"
         android:inputType="textPassword"
+        android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txtEmail" />
@@ -70,5 +72,19 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <ProgressBar
+        android:id="@+id/probLogin"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:indeterminate="true"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnLogin" />
 
 </android.support.constraint.ConstraintLayout>
