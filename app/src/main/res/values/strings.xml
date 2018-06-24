@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">PokerProjectApp</string>
+    <string name="txtEmail">Email@abc.com...</string>
+    <string name="loginLogo">Login Logo Description</string>
+    <string name="txtPassword">Password...</string>
+    <string name="btnLogin">LOGIN TO ACCOUNT</string>
+    <string name="btnRegister">NEED A ACCOUNT?</string>
 </resources>
