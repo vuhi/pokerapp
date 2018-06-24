@@ -17,24 +17,27 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
 
 public class LoginActivity extends AppCompatActivity {
 
-    //Butter Knife does not work for some reason!
-    //@BindView(R.id.txtEmail)
-    private EditText txtEmail;
+    @BindView(R.id.txtEmail)
+    EditText txtEmail;
 
-    //@BindView(R.id.txtPassword)
-    private EditText txtPassword;
+    @BindView(R.id.txtPassword)
+    EditText txtPassword;
 
-    //@BindView(R.id.btnLogin)
-    private Button btnLogin;
+    @BindView(R.id.btnLogin)
+    Button btnLogin;
 
-    //@BindView(R.id.btnRegister)
-    private Button btnRegister;
+    @BindView(R.id.btnRegister)
+    Button btnRegister;
 
-    //@BindView(R.id.probLogin)
-    private ProgressBar probLogin;
+    @BindView(R.id.probLogin)
+    ProgressBar probLogin;
 
     private  FirebaseAuth mAuth;
 
@@ -44,49 +47,7 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         mAuth = FirebaseAuth.getInstance();
-
-        txtEmail = (EditText) findViewById(R.id.txtEmail);
-        txtPassword = (EditText) findViewById(R.id.txtPassword);
-        btnLogin = (Button) findViewById(R.id.btnLogin);
-        btnRegister = (Button) findViewById(R.id.btnRegister);
-        probLogin = (ProgressBar) findViewById(R.id.probLogin);
-
-        btnLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String txtEmailString = txtEmail.getText().toString();
-                String txtPasswordString = txtPassword.getText().toString();
-
-                if(!TextUtils.isEmpty(txtEmailString) && !TextUtils.isEmpty(txtPasswordString)){
-                    probLogin.setVisibility(View.VISIBLE);
-                    mAuth.signInWithEmailAndPassword(txtEmailString, txtPasswordString).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                                @Override
-                                public void onComplete(@NonNull Task<AuthResult> task) {
-                                    if(task.isSuccessful()){
-                                        sendToMainActivity();
-                                    }
-                                    else{
-                                        String exceptionMsg = task.getException().getMessage();
-                                        Toast.makeText(LoginActivity.this, "Error: " + exceptionMsg, Toast.LENGTH_SHORT).show();
-                                    }
-                                    probLogin.setVisibility(View.INVISIBLE);
-                                }
-                            });
-                }
-                else{
-                    Toast.makeText(LoginActivity.this, "Please fill in the fields", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-
-        btnRegister.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent registerIntent = new Intent(LoginActivity.this, RegisterActivity.class);
-                startActivity(registerIntent);
-                finish();
-            }
-        });
+        ButterKnife.bind(this);
     }
 
     @Override
@@ -98,6 +59,38 @@ public class LoginActivity extends AppCompatActivity {
         if(currentUser != null){
             sendToMainActivity();
         }
+    }
+
+    @OnClick(R.id.btnLogin)
+    public void logIn() {
+        String txtEmailString = txtEmail.getText().toString();
+        String txtPasswordString = txtPassword.getText().toString();
+        if(!TextUtils.isEmpty(txtEmailString) && !TextUtils.isEmpty(txtPasswordString)){
+            probLogin.setVisibility(View.VISIBLE);
+            mAuth.signInWithEmailAndPassword(txtEmailString, txtPasswordString).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                @Override
+                public void onComplete(@NonNull Task<AuthResult> task) {
+                    if(task.isSuccessful()){
+                        sendToMainActivity();
+                    }
+                    else{
+                        String exceptionMsg = task.getException().getMessage();
+                        Toast.makeText(LoginActivity.this, "Error: " + exceptionMsg, Toast.LENGTH_SHORT).show();
+                    }
+                    probLogin.setVisibility(View.INVISIBLE);
+                }
+            });
+        }
+        else{
+            Toast.makeText(LoginActivity.this, "Please fill in the fields", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @OnClick(R.id.btnRegister)
+    public void register() {
+        Intent registerIntent = new Intent(LoginActivity.this, RegisterActivity.class);
+        startActivity(registerIntent);
+        finish();
     }
 
     private void sendToMainActivity(){
