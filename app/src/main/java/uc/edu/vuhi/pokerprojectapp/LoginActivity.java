@@ -44,6 +44,7 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         mAuth = FirebaseAuth.getInstance();
+
         txtEmail = (EditText) findViewById(R.id.txtEmail);
         txtPassword = (EditText) findViewById(R.id.txtPassword);
         btnLogin = (Button) findViewById(R.id.btnLogin);
@@ -58,8 +59,7 @@ public class LoginActivity extends AppCompatActivity {
 
                 if(!TextUtils.isEmpty(txtEmailString) && !TextUtils.isEmpty(txtPasswordString)){
                     probLogin.setVisibility(View.VISIBLE);
-                    mAuth.signInWithEmailAndPassword(txtEmailString, txtPasswordString)
-                            .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    mAuth.signInWithEmailAndPassword(txtEmailString, txtPasswordString).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                                 @Override
                                 public void onComplete(@NonNull Task<AuthResult> task) {
                                     if(task.isSuccessful()){
@@ -67,15 +67,24 @@ public class LoginActivity extends AppCompatActivity {
                                     }
                                     else{
                                         String exceptionMsg = task.getException().getMessage();
-                                        Toast.makeText(LoginActivity.this, "Error: " + exceptionMsg, Toast.LENGTH_LONG).show();
+                                        Toast.makeText(LoginActivity.this, "Error: " + exceptionMsg, Toast.LENGTH_SHORT).show();
                                     }
                                     probLogin.setVisibility(View.INVISIBLE);
                                 }
                             });
                 }
                 else{
-                    Toast.makeText(LoginActivity.this, "Please fill in your email or password", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LoginActivity.this, "Please fill in the fields", Toast.LENGTH_SHORT).show();
                 }
+            }
+        });
+
+        btnRegister.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent registerIntent = new Intent(LoginActivity.this, RegisterActivity.class);
+                startActivity(registerIntent);
+                finish();
             }
         });
     }
@@ -92,7 +101,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void sendToMainActivity(){
-        Intent mainIntent = new Intent(this, MainActivity.class);
+        Intent mainIntent = new Intent(LoginActivity.this, MainActivity.class);
         startActivity(mainIntent);
         finish();
     }

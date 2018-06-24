@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "45682452199",
+    "firebase_url": "https://pokerprojectapp.firebaseio.com",
+    "project_id": "pokerprojectapp",
+    "storage_bucket": "pokerprojectapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:45682452199:android:c8c7dc54b3ede41a",
+        "android_client_info": {
+          "package_name": "uc.edu.vuhi.pokerprojectapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "45682452199-ev3dgvcbbtn222rjrcltiogqpbtd4dhv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "uc.edu.vuhi.pokerprojectapp",
+            "certificate_hash": "a1305e36082cc41c9c92fa874239a07f51938913"
+          }
+        },
+        {
+          "client_id": "45682452199-i3q6nbg9vkrf2bgfripqsfa6vpf7bciq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCvR_YBtQCjK8srvJ8_5stzvBs3PmbiFIM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "45682452199-i3q6nbg9vkrf2bgfripqsfa6vpf7bciq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
