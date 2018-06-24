@@ -44,6 +44,7 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         mAuth = FirebaseAuth.getInstance();
+
         txtEmail = (EditText) findViewById(R.id.txtEmail);
         txtPassword = (EditText) findViewById(R.id.txtPassword);
         btnLogin = (Button) findViewById(R.id.btnLogin);
@@ -58,8 +59,7 @@ public class LoginActivity extends AppCompatActivity {
 
                 if(!TextUtils.isEmpty(txtEmailString) && !TextUtils.isEmpty(txtPasswordString)){
                     probLogin.setVisibility(View.VISIBLE);
-                    mAuth.signInWithEmailAndPassword(txtEmailString, txtPasswordString)
-                            .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    mAuth.signInWithEmailAndPassword(txtEmailString, txtPasswordString).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                                 @Override
                                 public void onComplete(@NonNull Task<AuthResult> task) {
                                     if(task.isSuccessful()){
@@ -67,7 +67,7 @@ public class LoginActivity extends AppCompatActivity {
                                     }
                                     else{
                                         String exceptionMsg = task.getException().getMessage();
-                                        Toast.makeText(LoginActivity.this, "Error: " + exceptionMsg, Toast.LENGTH_LONG).show();
+                                        Toast.makeText(LoginActivity.this, "Error: " + exceptionMsg, Toast.LENGTH_SHORT).show();
                                     }
                                     probLogin.setVisibility(View.INVISIBLE);
                                 }
@@ -84,6 +84,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent registerIntent = new Intent(LoginActivity.this, RegisterActivity.class);
                 startActivity(registerIntent);
+                finish();
             }
         });
     }
