@@ -68,4 +68,28 @@ public class UserDTO {
     public void setLastName(String lastName) {
         this.lastName = lastName;
     }
+
+    /**
+     * Empty constructor, create a empty UserDTO
+     */
+    public UserDTO(){
+
+    };
+
+    /**
+     * Given params, create new UserDTO
+     * @param email a Text represent user's email
+     * @param password a Text represent user's password
+     * @param firstName a Text represent user's firstName
+     * @param lastName a Text represent user's lastName
+     * @param nickname a Text represent user's nickname
+     */
+    public UserDTO(String email, String password, String firstName, String lastName, String nickname){
+        this.email = email;
+        this.password = password;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.nickname = nickname;
+        this.point = 100;
+    }
 }
