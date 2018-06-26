@@ -3,18 +3,74 @@ package uc.edu.vuhi.pokerprojectapp.DAO;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 
 import uc.edu.vuhi.pokerprojectapp.DTO.UserDTO;
 
 public class UserStub implements IUser {
+
     /**
-     * Get top 3 users that sort by user's point
+     * Given UserDTO, save user to database, note that I check for single field to get specific
+     * error msg
+     * @param user
+     * @throws Exception if email, password, firstName, lastName, nickname is empty
      */
     @Override
-    public List<UserDTO> top3(){
+    public void save(UserDTO user) throws Exception {
 
-        List<UserDTO> allUsers = new ArrayList<UserDTO>();
+        if(user.getEmail() == null || user.getEmail().isEmpty())
+        {
+            throw new Exception("Email is empty");
+        }
+        if(user.getPassword() == null || user.getPassword().isEmpty())
+        {
+            throw new Exception("Password is empty");
+        }
+        if(user.getFirstName() == null || user.getFirstName().isEmpty())
+        {
+            throw new Exception("FirstName is empty");
+        }
+        if(user.getLastName() == null || user.getLastName().isEmpty())
+        {
+            throw new Exception("LastName is empty");
+        }
+        if(user.getNickname() == null || user.getNickname().isEmpty())
+        {
+            throw new Exception("NickName is empty");
+        }
+    }
+
+    /**
+     * Given user's email, get the user
+     * @param id An integer represent user's id in database
+     * @return UserDTO match id
+     * @throws Exception
+     */
+    @Override
+    public UserDTO fetch(int id) throws Exception {
+
+        //Make sure their is no space or case sensitive
+        if(id == 123456789)
+        {
+            UserDTO Caz = new UserDTO("caz@mail.com","caz12345","Caz",
+                "Zac","cazz");
+            return Caz;
+        }
+        else
+        {
+            throw new Exception("Id does not exist or was deleted");
+        }
+    }
+
+    /**
+     * Get all users in database
+     * @return Hashmap of users with user's email as key
+     */
+    @Override
+    public HashMap<String, UserDTO> fetchAll() {
+
+        HashMap allUsers = new HashMap();
 
         UserDTO hai = new UserDTO();
         hai.setEmail("vuhi@mail.abc");
@@ -56,28 +112,13 @@ public class UserStub implements IUser {
         teemo.setNickname("teemo");
         teemo.setPoint(25000);
 
-        allUsers.add(hai);
-        allUsers.add(jonny);
-        allUsers.add(sing);
-        allUsers.add(lux);
-        allUsers.add(teemo);
+        allUsers.put(hai.getEmail(), hai);
+        allUsers.put(jonny.getEmail(), jonny);
+        allUsers.put(sing.getEmail(), sing);
+        allUsers.put(lux.getEmail(), lux);
+        allUsers.put(teemo.getEmail(), teemo);
 
-        Comparator<UserDTO> comparator = new Comparator<UserDTO>() {
-            @Override
-            public int compare(UserDTO left, UserDTO right) {
-                return right.getPoint() - left.getPoint();
-            }
-        };
-        Collections.sort(allUsers, comparator);
-        List<UserDTO> top3 = allUsers.subList(0,3);
-
-        return top3;
+        return allUsers;
     }
-
-/*    @Override
-    public UserDTO createUser(String email, String password, String nickName){
-        UserDTO newUser = new UserDTO();
-
-        return ;
-    }*/
 }
+

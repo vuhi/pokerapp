@@ -10,6 +10,9 @@ import android.view.MenuItem;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import uc.edu.vuhi.pokerprojectapp.DAO.IUser;
+import uc.edu.vuhi.pokerprojectapp.DAO.UserStub;
+
 public class MainActivity extends AppCompatActivity {
 
     private  FirebaseAuth mAuth;
