@@ -43,15 +43,15 @@ public class UserStub implements IUser {
 
     /**
      * Given user's email, get the user
-     * @param id An integer represent user's id in database
+     * @param email An text represent user's email in database
      * @return UserDTO match id
      * @throws Exception
      */
     @Override
-    public UserDTO fetch(int id) throws Exception {
+    public UserDTO fetch(String email) throws Exception {
 
         //Make sure their is no space or case sensitive
-        if(id == 123456789)
+        if(email.equalsIgnoreCase("caz@mail.com"))
         {
             UserDTO Caz = new UserDTO("caz@mail.com","caz12345","Caz",
                 "Zac","cazz");
@@ -59,7 +59,7 @@ public class UserStub implements IUser {
         }
         else
         {
-            throw new Exception("Id does not exist or was deleted");
+            throw new Exception("user does not exist or was deleted");
         }
     }
 

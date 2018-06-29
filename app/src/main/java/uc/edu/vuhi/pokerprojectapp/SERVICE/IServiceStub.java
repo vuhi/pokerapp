@@ -52,14 +52,14 @@ public class IServiceStub implements IService {
 
     /**
      *
-     * @param id The id of user that want to retrieve
-     * @return The user found with matching id
+     * @param email The email of user that want to retrieve
+     * @return The user found with matching email
      * @throws Exception if there is an underlying error in the persistence mechanism.
      */
     @Override
-    public UserDTO getUser(int id) throws Exception {
+    public UserDTO getUser(String email) throws Exception {
         //Search by integer is the fastest
-        return  userDAO.fetch(id);
+        return  userDAO.fetch(email);
     }
 
     /**

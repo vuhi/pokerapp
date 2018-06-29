@@ -24,11 +24,11 @@ public interface IService {
 
     /**
      * Retrieve the given user
-     * @param id The id of user that want to retrieve
+     * @param email The email of user that want to retrieve
      * @return the user retrieved
      * @throws Exception if there is an underlying error in the persistence mechanism.
      */
-    public UserDTO getUser(int id) throws  Exception;
+    public UserDTO getUser(String email) throws  Exception;
 
     /**
      * Get top 3 users that have the most point

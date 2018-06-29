@@ -19,11 +19,11 @@ public interface IUser {
 
     /**
      * Fetch user with given email
-     * @param id A integer represent user's id in database
+     * @param email A text represent user's email in database
      * @return
      * @throws Exception
      */
-    public UserDTO fetch(int id) throws Exception;
+    public UserDTO fetch(String email) throws Exception;
 
     /**
      * Get all users in database as Hashtable
