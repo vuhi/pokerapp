@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
         Intent accountSettingsIntent = new Intent(this, MainActivity.class);
         startActivity(accountSettingsIntent);
 
-        // finish();
+         finish();
     }
 
     public void rechargeTokenClick(MenuItem menuItem) {
@@ -70,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
         Intent rechargeTokenIntent = new Intent(this, MainActivity.class);
         startActivity(rechargeTokenIntent);
 
-        // finish();
+        finish();
     }
 
     public void logoutClick(MenuItem menuItem) {
@@ -81,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
 /*        Intent logoutIntent = new Intent(this, MainActivity.class);
         startActivity(logoutIntent);*/
 
-        // finish();
+        finish();
     }
 
 
