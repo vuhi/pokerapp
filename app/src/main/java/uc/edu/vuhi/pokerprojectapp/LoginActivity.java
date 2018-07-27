@@ -20,6 +20,7 @@ import com.google.firebase.auth.FirebaseUser;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import uc.edu.vuhi.pokerprojectapp.UTIL.Utility;
 
 
 public class LoginActivity extends AppCompatActivity {
@@ -57,7 +58,7 @@ public class LoginActivity extends AppCompatActivity {
         FirebaseUser currentUser = mAuth.getCurrentUser();
 
         if(currentUser != null){
-            sendToMainActivity();
+            Utility.sendTo(LoginActivity.this, MainActivity.class);
         }
     }
 
@@ -71,7 +72,7 @@ public class LoginActivity extends AppCompatActivity {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
                     if(task.isSuccessful()){
-                        sendToMainActivity();
+                        Utility.sendTo(LoginActivity.this, MainActivity.class);
                     }
                     else{
                         String exceptionMsg = task.getException().getMessage();
@@ -90,12 +91,6 @@ public class LoginActivity extends AppCompatActivity {
     public void register() {
         Intent registerIntent = new Intent(LoginActivity.this, RegisterActivity.class);
         startActivity(registerIntent);
-        finish();
-    }
-
-    private void sendToMainActivity(){
-        Intent mainIntent = new Intent(LoginActivity.this, MainActivity.class);
-        startActivity(mainIntent);
         finish();
     }
 }

@@ -20,6 +20,7 @@ import com.google.firebase.auth.FirebaseUser;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import uc.edu.vuhi.pokerprojectapp.UTIL.Utility;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -57,7 +58,7 @@ public class RegisterActivity extends AppCompatActivity {
 
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if(currentUser != null){
-            sendToMainActivity();
+            Utility.sendTo(RegisterActivity.this, MainActivity.class);
         }
     }
 
@@ -76,7 +77,8 @@ public class RegisterActivity extends AppCompatActivity {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 if (task.isSuccessful()) {
-                                    sendToMainActivity();
+                                    Utility.sendTo(RegisterActivity.this, SetUpActivity.class);
+
                                 } else {
                                     String exceptionMsg = task.getException().getMessage();
                                     Toast.makeText(RegisterActivity.this, "Error: " + exceptionMsg, Toast.LENGTH_LONG).show();
@@ -94,20 +96,6 @@ public class RegisterActivity extends AppCompatActivity {
 
     @OnClick(R.id.btnAlreadyHaveAccount)
     public void alreadyHaveAccount() {
-        sendToLoginActivity();
-    }
-
-
-
-    private void sendToMainActivity() {
-        Intent mainIntent = new Intent(RegisterActivity.this, MainActivity.class);
-        startActivity(mainIntent);
-        finish();
-    }
-
-    private void sendToLoginActivity() {
-        Intent loginIntent = new Intent(RegisterActivity.this, LoginActivity.class);
-        startActivity(loginIntent);
-        finish();
+        Utility.sendTo(RegisterActivity.this, LoginActivity.class);
     }
 }
