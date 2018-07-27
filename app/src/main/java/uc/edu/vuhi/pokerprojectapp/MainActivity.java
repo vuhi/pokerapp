@@ -1,6 +1,5 @@
 package uc.edu.vuhi.pokerprojectapp;
 
-import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -10,24 +9,23 @@ import android.view.MenuItem;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-import uc.edu.vuhi.pokerprojectapp.DAO.IUser;
-import uc.edu.vuhi.pokerprojectapp.DAO.UserStub;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import uc.edu.vuhi.pokerprojectapp.UTIL.Utility;
 
 public class MainActivity extends AppCompatActivity {
 
     private  FirebaseAuth mAuth;
 
-    private Toolbar toolbarMain;
-
-
+    @BindView(R.id.toolbarMain)
+    Toolbar toolbarMain;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        ButterKnife.bind(this);
         mAuth = FirebaseAuth.getInstance();
-        toolbarMain = (Toolbar)findViewById(R.id.toolbarMain);
         setSupportActionBar(toolbarMain);
         getSupportActionBar().setTitle("Main Page");
     }
@@ -38,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
 
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if(currentUser == null){
-            sentToLoginActivity();
+            Utility.sendTo(MainActivity.this, LoginActivity.class);
         }
     }
 
@@ -55,7 +53,10 @@ public class MainActivity extends AppCompatActivity {
                 logOut();
                 return super.onOptionsItemSelected(item);
 
-                default:
+            case R.id.btnAccountSetting:
+                Utility.sendTo(this, SetUpActivity.class);
+                return super.onOptionsItemSelected(item);
+            default:
                     return false;
         }
 
@@ -63,12 +64,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void logOut() {
         mAuth.signOut();
-        sentToLoginActivity();
-    }
-
-    private void sentToLoginActivity() {
-        Intent loginIntent = new Intent(this, LoginActivity.class);
-        startActivity(loginIntent);
-        finish();
+        Utility.sendTo(this, LoginActivity.class);
     }
 }

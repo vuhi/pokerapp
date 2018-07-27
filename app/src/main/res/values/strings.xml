@@ -10,4 +10,6 @@
     <string name="btnCreateNewAccount">Create New Account</string>
     <string name="btnAlreadyHaveAccount">Already Have Account?</string>
     <string name="btnAccountSetting">Account Setting</string>
+    <string name="txtNickName">Your Nick Name</string>
+    <string name="btnSaveAccountSetting">SAVE SETTING</string>
 </resources>
