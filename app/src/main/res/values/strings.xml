@@ -12,4 +12,8 @@
     <string name="btnAccountSetting">Account Setting</string>
     <string name="txtNickName">Your Nick Name</string>
     <string name="btnSaveAccountSetting">SAVE SETTING</string>
+    <string name="btnResetPswd">Forgot Password?</string>
+    <string name="txtResetPswd">Enter your email below to send a reset email.</string>
+    <string name="btnResetPswdEmail">Submit</string>
+    <string name="btnBack">Back</string>
 </resources>

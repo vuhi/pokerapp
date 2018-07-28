@@ -40,6 +40,10 @@ public class LoginActivity extends AppCompatActivity {
     @BindView(R.id.probLogin)
     ProgressBar probLogin;
 
+    @BindView(R.id.btnResetPswd)
+    Button btnResetPswd;
+
+
     private  FirebaseAuth mAuth;
 
     @Override
@@ -90,6 +94,13 @@ public class LoginActivity extends AppCompatActivity {
     @OnClick(R.id.btnRegister)
     public void register() {
         Intent registerIntent = new Intent(LoginActivity.this, RegisterActivity.class);
+        startActivity(registerIntent);
+        finish();
+    }
+
+    @OnClick(R.id.btnResetPswd)
+    public void resetPswd() {
+        Intent registerIntent = new Intent(LoginActivity.this, ResetPswdActivity.class);
         startActivity(registerIntent);
         finish();
     }
