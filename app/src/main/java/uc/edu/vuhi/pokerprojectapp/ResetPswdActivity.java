@@ -19,7 +19,6 @@ import com.google.android.gms.tasks.Task;
 
 public class ResetPswdActivity extends AppCompatActivity {
 
-
     @BindView(R.id.txtResetPswdEmail)
     EditText txtResetPswdEmail;
 
@@ -72,7 +71,5 @@ public class ResetPswdActivity extends AppCompatActivity {
                 finish();
             }
         });
-
-
     }
 }

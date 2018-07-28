@@ -40,12 +40,13 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="24dp"
         android:layout_marginStart="24dp"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="96dp"
         android:ems="10"
         android:hint="@string/txtEmail"
         android:inputType="textEmailAddress"
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageLogo" />
 
@@ -61,6 +62,7 @@
         android:inputType="textPassword"
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txtEmail" />
 
@@ -70,9 +72,10 @@
         android:layout_height="41dp"
         android:layout_marginEnd="24dp"
         android:layout_marginStart="24dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="152dp"
         android:text="@string/btnLogin"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txtPassword" />
 
