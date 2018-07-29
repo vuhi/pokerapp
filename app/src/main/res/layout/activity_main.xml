@@ -6,6 +6,30 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+    <ImageButton
+        android:id="@+id/imgBtnCard5"
+        android:layout_width="100dp"
+        android:layout_height="130dp"
+        android:layout_marginEnd="60dp"
+        android:layout_marginTop="32dp"
+        android:background="@android:color/transparent"
+        android:scaleType="fitXY"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imgBtnCard2"
+        app:srcCompat="@drawable/back_02" />
+
+    <ImageButton
+        android:id="@+id/imgBtnCard4"
+        android:layout_width="100dp"
+        android:layout_height="130dp"
+        android:layout_marginStart="60dp"
+        android:layout_marginTop="32dp"
+        android:background="@android:color/transparent"
+        android:scaleType="fitXY"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imgBtnCard2"
+        app:srcCompat="@drawable/back_02" />
+
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbarMain"
         android:layout_width="match_parent"
@@ -14,72 +38,46 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"></android.support.v7.widget.Toolbar>
-    
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="MAIN PAGE"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        ></android.support.v7.widget.Toolbar>
 
     <ImageButton
-        android:id="@+id/imageButton"
-        android:layout_width="79dp"
-        android:layout_height="94dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="12dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbarMain"
-        app:srcCompat="@android:drawable/alert_dark_frame" />
-
-    <ImageButton
-        android:id="@+id/imageButton2"
-        android:layout_width="75dp"
-        android:layout_height="99dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="12dp"
-        app:layout_constraintEnd_toStartOf="@+id/imageButton3"
-        app:layout_constraintHorizontal_bias="0.468"
-        app:layout_constraintStart_toEndOf="@+id/imageButton"
-        app:layout_constraintTop_toBottomOf="@+id/toolbarMain"
-        app:srcCompat="@android:drawable/alert_dark_frame" />
-
-    <ImageButton
-        android:id="@+id/imageButton3"
-        android:layout_width="79dp"
-        android:layout_height="103dp"
+        android:id="@+id/imgBtnCard3"
+        android:layout_width="100dp"
+        android:layout_height="130dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="16dp"
+        android:background="@android:color/transparent"
+        android:scaleType="fitXY"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbarMain"
-        app:srcCompat="@android:drawable/alert_dark_frame" />
+        app:srcCompat="@drawable/back_02" />
 
     <ImageButton
-        android:id="@+id/imageButton4"
-        android:layout_width="82dp"
-        android:layout_height="110dp"
-        android:layout_marginStart="72dp"
-        android:layout_marginTop="40dp"
+        android:id="@+id/imgBtnCard2"
+        android:layout_width="100dp"
+        android:layout_height="130dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="16dp"
+        android:background="@android:color/transparent"
+        android:scaleType="fitXY"
+        app:layout_constraintEnd_toStartOf="@+id/imgBtnCard3"
+        app:layout_constraintStart_toEndOf="@+id/imgBtnCard1"
+        app:layout_constraintTop_toBottomOf="@+id/toolbarMain"
+        app:srcCompat="@drawable/back_02" />
+
+    <ImageButton
+        android:id="@+id/imgBtnCard1"
+        android:layout_width="100dp"
+        android:layout_height="130dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:background="@android:color/transparent"
+        android:scaleType="fitXY"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageButton2"
-        app:srcCompat="@android:drawable/alert_dark_frame" />
+        app:layout_constraintTop_toBottomOf="@+id/toolbarMain"
+        app:srcCompat="@drawable/back_02" />
 
-    <ImageButton
-        android:id="@+id/imageButton5"
-        android:layout_width="82dp"
-        android:layout_height="110dp"
-        android:layout_marginEnd="84dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="40dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toEndOf="@+id/imageButton4"
-        app:layout_constraintTop_toBottomOf="@+id/imageButton2"
-        app:srcCompat="@android:drawable/alert_dark_frame" />
 
 </android.support.constraint.ConstraintLayout>
