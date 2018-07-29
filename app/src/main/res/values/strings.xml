@@ -12,4 +12,7 @@
     <string name="btnAccountSetting">Account Setting</string>
     <string name="txtNickName">Your Nick Name</string>
     <string name="btnSaveAccountSetting">SAVE SETTING</string>
+    <string name="btnResetPasswd">Forget Password?</string>
+    <string name="txtResetPasswdTitle">Reset Password</string>
+    <string name="btnResetPasswdSubmit">SUBMIT</string>
 </resources>
