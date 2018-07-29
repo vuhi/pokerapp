@@ -1,16 +1,24 @@
 package uc.edu.vuhi.pokerprojectapp;
 
+import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import uc.edu.vuhi.pokerprojectapp.DTO.UserDTO;
 import uc.edu.vuhi.pokerprojectapp.UTIL.Utility;
 import android.content.Intent;
 import android.widget.Toast;
@@ -18,6 +26,7 @@ import android.widget.Toast;
 public class MainActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
+    private FirebaseFirestore mDatabase;
 
     @BindView(R.id.toolbarMain)
     Toolbar toolbarMain;
@@ -28,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         mAuth = FirebaseAuth.getInstance();
+        mDatabase = FirebaseFirestore.getInstance();
         setSupportActionBar(toolbarMain);
         getSupportActionBar().setTitle("Main Page");
     }
@@ -41,6 +51,23 @@ public class MainActivity extends AppCompatActivity {
         if (currentUser == null) {
             Utility.sendTo(MainActivity.this, LoginActivity.class, true);
         }
+        //User log in
+        else{
+            mDatabase.collection("Users").document(currentUser.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if(task.isSuccessful()){
+                        //User does not update record when register
+                        if(!task.getResult().exists()){
+                            Utility.sendTo(MainActivity.this, SetUpActivity.class, false);
+                        }
+                    }
+                    else {
+                        Toast.makeText(MainActivity.this, "An error occurred while retrieving user" , Toast.LENGTH_LONG).show();
+                    }
+                }
+            });
+        }
     }
 
     @Override
@@ -49,6 +76,9 @@ public class MainActivity extends AppCompatActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
+    /**
+     * Menu option handler
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
