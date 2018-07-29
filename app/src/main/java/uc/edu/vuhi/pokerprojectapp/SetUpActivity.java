@@ -12,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -68,6 +69,10 @@ public class SetUpActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         setSupportActionBar(toolbarSetUp);
         getSupportActionBar().setTitle("Account Setting Page");
+        //Set up back button
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         mAuth = FirebaseAuth.getInstance();
         mStorageRef = FirebaseStorage.getInstance().getReference();
         mStore = FirebaseFirestore.getInstance();
@@ -116,7 +121,7 @@ public class SetUpActivity extends AppCompatActivity {
                             public void onComplete(@NonNull Task<Void> task) {
                                 if(task.isSuccessful()){
                                     Toast.makeText(SetUpActivity.this, "Saving", Toast.LENGTH_LONG).show();
-                                    Utility.sendTo(SetUpActivity.this, MainActivity.class);
+                                    Utility.sendTo(SetUpActivity.this, MainActivity.class, false);
                                 } else {
                                     String error = task.getException().getMessage();
                                     Toast.makeText(SetUpActivity.this, "An error occurred while saving setting: " + error, Toast.LENGTH_LONG).show();
@@ -171,5 +176,17 @@ public class SetUpActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                //Return to previous activity
+                finish();
+                return super.onOptionsItemSelected(item);
+
+            default:
+                return false;
+        }
+    }
 
 }

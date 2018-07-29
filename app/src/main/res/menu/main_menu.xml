@@ -4,15 +4,12 @@
 
     <item
         android:id="@+id/btnAccountSetting"
-        android:onClick="accountSettingClick"
         android:title="@string/btnAccountSetting" />
     <item
         android:id="@+id/btnRechargeToken"
-        android:onClick="rechargeTokenClick"
-        android:title="rechargeToken"
-        app:showAsAction="ifRoom" />
+        android:title="@string/btnRechargeToken" />
     <item
         android:id="@+id/btnLogout"
-        android:onClick="logoutClick"
-        android:title="@string/logout" />
+        android:title="@string/btnLogout" />
+
 </menu>

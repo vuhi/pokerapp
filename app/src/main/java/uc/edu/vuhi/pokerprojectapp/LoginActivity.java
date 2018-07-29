@@ -64,7 +64,7 @@ public class LoginActivity extends AppCompatActivity {
         FirebaseUser currentUser = mAuth.getCurrentUser();
 
         if(currentUser != null){
-            Utility.sendTo(LoginActivity.this, MainActivity.class);
+            Utility.sendTo(LoginActivity.this, MainActivity.class, true);
         }
     }
 
@@ -82,7 +82,7 @@ public class LoginActivity extends AppCompatActivity {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
                     if(task.isSuccessful()){
-                        Utility.sendTo(LoginActivity.this, MainActivity.class);
+                        Utility.sendTo(LoginActivity.this, MainActivity.class, true);
                     }
                     else{
                         String exceptionMsg = task.getException().getMessage();
@@ -102,7 +102,7 @@ public class LoginActivity extends AppCompatActivity {
      */
     @OnClick(R.id.btnRegister)
     public void register() {
-        Utility.sendTo(LoginActivity.this, RegisterActivity.class);
+        Utility.sendTo(LoginActivity.this, RegisterActivity.class, true);
     }
 
     /**

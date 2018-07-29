@@ -13,6 +13,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import uc.edu.vuhi.pokerprojectapp.UTIL.Utility;
 import android.content.Intent;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -20,12 +21,6 @@ public class MainActivity extends AppCompatActivity {
 
     @BindView(R.id.toolbarMain)
     Toolbar toolbarMain;
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main_menu, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,49 +36,18 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
+        //Check if user is log in or not
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser == null) {
-            Utility.sendTo(MainActivity.this, LoginActivity.class);
+            Utility.sendTo(MainActivity.this, LoginActivity.class, true);
         }
     }
 
-
-    /**
-     * This will be invoked when the user clicks the  menu
-     *
-     * @param menuItem
-     */
-    public void accountSettingClick(MenuItem menuItem) {
-        // Explict intent to invoke another screen.
-        // Change MainActivity.class to AccountSettingsActivity.class once it's made
-
-        Intent accountSettingsIntent = new Intent(this, MainActivity.class);
-        startActivity(accountSettingsIntent);
-
-         finish();
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+        return super.onCreateOptionsMenu(menu);
     }
-
-    public void rechargeTokenClick(MenuItem menuItem) {
-        // Explict intent to invoke another screen.
-        // Change MainActivity.class to rechargeTokenActivity.class once it's made
-
-        Intent rechargeTokenIntent = new Intent(this, MainActivity.class);
-        startActivity(rechargeTokenIntent);
-
-        finish();
-    }
-
-    public void logoutClick(MenuItem menuItem) {
-        // Explict intent to invoke another screen. Can we just close the app from this method?
-        // Change MainActivity.class to logoutActivity.class once it's made
-        logOut();
-
-/*        Intent logoutIntent = new Intent(this, MainActivity.class);
-        startActivity(logoutIntent);*/
-
-        finish();
-    }
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -93,17 +57,21 @@ public class MainActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
 
             case R.id.btnAccountSetting:
-                Utility.sendTo(this, SetUpActivity.class);
+                Utility.sendTo(MainActivity.this, SetUpActivity.class, false);
                 return super.onOptionsItemSelected(item);
+
+            case R.id.btnRechargeToken:
+                //Pop up dialog
+                Toast.makeText(MainActivity.this, "RechargeToken clicked", Toast.LENGTH_LONG).show();
+                return super.onOptionsItemSelected(item);
+
             default:
                 return false;
         }
-
     }
-
 
     private void logOut() {
         mAuth.signOut();
-        Utility.sendTo(this, LoginActivity.class);
+        Utility.sendTo(this, LoginActivity.class, true);
     }
 }

@@ -58,7 +58,7 @@ public class RegisterActivity extends AppCompatActivity {
 
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if(currentUser != null){
-            Utility.sendTo(RegisterActivity.this, MainActivity.class);
+            Utility.sendTo(RegisterActivity.this, MainActivity.class, true);
         }
     }
 
@@ -77,7 +77,7 @@ public class RegisterActivity extends AppCompatActivity {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 if (task.isSuccessful()) {
-                                    Utility.sendTo(RegisterActivity.this, SetUpActivity.class);
+                                    Utility.sendTo(RegisterActivity.this, SetUpActivity.class, true);
 
                                 } else {
                                     String exceptionMsg = task.getException().getMessage();
@@ -96,6 +96,6 @@ public class RegisterActivity extends AppCompatActivity {
 
     @OnClick(R.id.btnAlreadyHaveAccount)
     public void alreadyHaveAccount() {
-        Utility.sendTo(RegisterActivity.this, LoginActivity.class);
+        Utility.sendTo(RegisterActivity.this, LoginActivity.class, true);
     }
 }
