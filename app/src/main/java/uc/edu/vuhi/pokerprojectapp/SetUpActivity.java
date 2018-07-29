@@ -103,6 +103,7 @@ public class SetUpActivity extends AppCompatActivity {
                         //set up
                         profileImg = Uri.parse(retrievedUser.getImagePath());
                         txtNickName.setText(retrievedUser.getNickname());
+                        //Use glide library to set img view at run time.
                         Glide.with(SetUpActivity.this).load(retrievedUser.getImagePath()).into(circleImgProfile);
                         btnSaveAccountSetting.setEnabled(true);
                     }
