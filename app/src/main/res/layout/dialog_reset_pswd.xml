@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="8dp">
+
+    <TextView
+        android:id="@+id/txtResetPasswd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/txtResetPasswdTitle"
+        android:textStyle="bold"
+        android:layout_marginTop="10dp"
+        android:textSize="25sp" />
+
+    <EditText
+        android:id="@+id/txtResetPasswdEmail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="@string/txtEmail"
+        android:inputType="textEmailAddress"
+        android:layout_marginTop="10dp"
+        android:textSize="24sp"/>
+
+    <Button
+        android:id="@+id/btnResetPasswdSubmit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="@string/btnResetPasswdSubmit" />
+
+</LinearLayout>

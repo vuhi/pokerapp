@@ -1,7 +1,10 @@
 package uc.edu.vuhi.pokerprojectapp;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -40,6 +43,9 @@ public class LoginActivity extends AppCompatActivity {
     @BindView(R.id.probLogin)
     ProgressBar probLogin;
 
+    @BindView(R.id.btnResetPswd)
+    Button btnResetPswd;
+
     private  FirebaseAuth mAuth;
 
     @Override
@@ -62,10 +68,14 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * login
+     */
     @OnClick(R.id.btnLogin)
     public void logIn() {
         String txtEmailString = txtEmail.getText().toString();
         String txtPasswordString = txtPassword.getText().toString();
+        //Check for empty
         if(!TextUtils.isEmpty(txtEmailString) && !TextUtils.isEmpty(txtPasswordString)){
             probLogin.setVisibility(View.VISIBLE);
             mAuth.signInWithEmailAndPassword(txtEmailString, txtPasswordString).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
@@ -87,10 +97,65 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * send to register activity
+     */
     @OnClick(R.id.btnRegister)
     public void register() {
-        Intent registerIntent = new Intent(LoginActivity.this, RegisterActivity.class);
-        startActivity(registerIntent);
-        finish();
+        Utility.sendTo(LoginActivity.this, RegisterActivity.class);
+    }
+
+    /**
+     * pop up dialog when click
+     */
+    @OnClick(R.id.btnResetPswd)
+    public void resetPswd() {
+        //Initiate dialog
+        AlertDialog.Builder mBuilder = new AlertDialog.Builder(LoginActivity.this);
+        View mView = getLayoutInflater().inflate(R.layout.dialog_reset_pswd, null);
+
+        //Binding with butter-knife will result with crashing
+        final EditText txtResetPasswdEmail = (EditText) mView.findViewById(R.id.txtResetPasswdEmail);
+        Button btnResetPasswdSubmit = (Button) mView.findViewById(R.id.btnResetPasswdSubmit);
+
+        //Dismiss dialog
+        mBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                   @Override
+                   public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                   }
+                });
+
+        //Create view for dialog
+        mBuilder.setView(mView);
+        final AlertDialog dialog = mBuilder.create();
+        dialog.show();
+
+        //Handle button
+        btnResetPasswdSubmit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                String resetPasswordEmail = txtResetPasswdEmail.getText().toString().trim();
+                if (TextUtils.isEmpty(resetPasswordEmail)) {
+                    Toast.makeText(getApplicationContext(), "Please enter your email!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                mAuth.sendPasswordResetEmail(resetPasswordEmail)
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()) {
+                                    Toast.makeText(LoginActivity.this, "An email has sent to reset your password!", Toast.LENGTH_SHORT).show();
+                                    //Delay dialog with "time"
+                                    Utility.delay(dialog, 3000);
+                                } else {
+                                    Toast.makeText(LoginActivity.this, "Fail to send reset password email!", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+            }
+        });
     }
 }
