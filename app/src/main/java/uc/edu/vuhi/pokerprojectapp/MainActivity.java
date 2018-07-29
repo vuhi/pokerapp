@@ -12,10 +12,12 @@ import com.google.firebase.auth.FirebaseUser;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import uc.edu.vuhi.pokerprojectapp.UTIL.Utility;
+import android.content.Intent;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
-    private  FirebaseAuth mAuth;
+    private FirebaseAuth mAuth;
 
     @BindView(R.id.toolbarMain)
     Toolbar toolbarMain;
@@ -34,9 +36,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
+        //Check if user is log in or not
         FirebaseUser currentUser = mAuth.getCurrentUser();
-        if(currentUser == null){
-            Utility.sendTo(MainActivity.this, LoginActivity.class);
+        if (currentUser == null) {
+            Utility.sendTo(MainActivity.this, LoginActivity.class, true);
         }
     }
 
@@ -48,22 +51,27 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.btnLogout:
                 logOut();
                 return super.onOptionsItemSelected(item);
 
             case R.id.btnAccountSetting:
-                Utility.sendTo(this, SetUpActivity.class);
+                Utility.sendTo(MainActivity.this, SetUpActivity.class, false);
                 return super.onOptionsItemSelected(item);
-            default:
-                    return false;
-        }
 
+            case R.id.btnRechargeToken:
+                //Pop up dialog
+                Toast.makeText(MainActivity.this, "RechargeToken clicked", Toast.LENGTH_LONG).show();
+                return super.onOptionsItemSelected(item);
+
+            default:
+                return false;
+        }
     }
 
     private void logOut() {
         mAuth.signOut();
-        Utility.sendTo(this, LoginActivity.class);
+        Utility.sendTo(this, LoginActivity.class, true);
     }
 }

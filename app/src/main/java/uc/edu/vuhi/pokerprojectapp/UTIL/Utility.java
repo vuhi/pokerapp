@@ -10,10 +10,12 @@ import android.support.v7.app.AlertDialog;
 public final class Utility {
 
     private Utility(){}
-    public static void sendTo(Activity currentActivity, Class<?> otherActivityClass){
+    public static void sendTo(Activity currentActivity, Class<?> otherActivityClass, boolean finish){
         Intent intent = new Intent(currentActivity, otherActivityClass);
         currentActivity.startActivity(intent);
-        currentActivity.finish();
+        if (finish == true){
+            currentActivity.finish();
+        }
     }
 
     public static void delay(final AlertDialog dialog, int time){

@@ -5,11 +5,12 @@
     <string name="txtPassword">Password...</string>
     <string name="btnLogin">LOGIN TO ACCOUNT</string>
     <string name="btnRegister">NEED A ACCOUNT?</string>
-    <string name="logout">Logout</string>
+    <string name="btnLogout">Logout</string>
     <string name="txtConfirmPassword">Confirm Password...</string>
     <string name="btnCreateNewAccount">Create New Account</string>
     <string name="btnAlreadyHaveAccount">Already Have Account?</string>
     <string name="btnAccountSetting">Account Setting</string>
+    <string name="btnRechargeToken">Recharge</string>
     <string name="txtNickName">Your Nick Name</string>
     <string name="btnSaveAccountSetting">SAVE SETTING</string>
     <string name="btnResetPasswd">Forget Password?</string>
