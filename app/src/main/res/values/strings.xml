@@ -16,4 +16,7 @@
     <string name="btnResetPasswd">Forget Password?</string>
     <string name="txtResetPasswdTitle">Reset Password</string>
     <string name="btnResetPasswdSubmit">SUBMIT</string>
+    <string name="txtViewMoney">Bet Options</string>
+    <string name="btnPlay">PLAY</string>
+    <string name="txtViewNotification">Welcome to Poker Game!</string>
 </resources>

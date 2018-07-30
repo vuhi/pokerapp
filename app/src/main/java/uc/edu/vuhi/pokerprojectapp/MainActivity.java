@@ -15,21 +15,42 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.webianks.library.scroll_choice.ScrollChoice;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
+import butterknife.OnItemSelected;
 import uc.edu.vuhi.pokerprojectapp.DTO.UserDTO;
 import uc.edu.vuhi.pokerprojectapp.UTIL.Utility;
 import android.content.Intent;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
     private FirebaseFirestore mDatabase;
+    private boolean isPlayed = false;
 
     @BindView(R.id.toolbarMain)
     Toolbar toolbarMain;
+
+    @BindView(R.id.scrollMoney)
+    ScrollChoice scrollMoney;
+
+    @BindView(R.id.txtViewNotification)
+    TextView txtViewNotification;
+
+    @BindView(R.id.btnPlay)
+    Button btnPlay;
+
+    List<String> datas = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +61,35 @@ public class MainActivity extends AppCompatActivity {
         mDatabase = FirebaseFirestore.getInstance();
         setSupportActionBar(toolbarMain);
         getSupportActionBar().setTitle("Main Page");
+        loadDatas();
+    }
+
+    @OnClick(R.id.btnPlay)
+    public void Play(){
+        if(!isPlayed){
+            btnPlay.setText("DRAW");
+        }
+        //Deal random card
+    }
+
+    private void loadDatas() {
+        datas.add("000");
+        datas.add("111");
+        datas.add("222");
+        datas.add("333");
+        datas.add("444");
+        datas.add("555");
+        datas.add("666");
+        datas.add("777");
+        datas.add("888");
+        datas.add("999");
+        scrollMoney.addItems(datas,2);
+        scrollMoney.setOnItemSelectedListener(new ScrollChoice.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(ScrollChoice scrollChoice, int position, String name) {
+                txtViewNotification.setText(name);
+            }
+        });
     }
 
     @Override
