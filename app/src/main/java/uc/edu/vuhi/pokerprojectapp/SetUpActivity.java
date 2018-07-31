@@ -28,6 +28,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -41,6 +42,7 @@ import java.util.Map;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.OnFocusChange;
 import butterknife.OnTextChanged;
 import de.hdodenhof.circleimageview.CircleImageView;
 import uc.edu.vuhi.pokerprojectapp.DTO.UserDTO;
@@ -149,7 +151,22 @@ public class SetUpActivity extends AppCompatActivity {
 
         final String stringNickName = txtNickName.getText().toString(); //Need to check unique NickName (Not implement yet)
 
-        //User upload new img
+        /*mDatabase.collection("Users").whereEqualTo("nickname", stringNickName).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if(task.isSuccessful()){
+                    if(task.getResult().getDocuments().isEmpty()){
+                        Toast.makeText(SetUpActivity.this, "no data" , Toast.LENGTH_LONG).show();
+                    }else {
+                        Toast.makeText(SetUpActivity.this, "exist" , Toast.LENGTH_LONG).show();
+                    }
+                }
+                else {
+                    Toast.makeText(SetUpActivity.this, "An error occurred" , Toast.LENGTH_LONG).show();
+                }
+            }
+        });*/
+
         if(isImageChanged){
             if(!TextUtils.isEmpty(stringNickName) && profileImg != null){
                 probAccountSetting.setVisibility(View.VISIBLE);

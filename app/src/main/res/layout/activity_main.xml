@@ -46,7 +46,7 @@
         android:layout_width="100dp"
         android:layout_height="130dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="32dp"
         android:background="@android:color/transparent"
         android:scaleType="fitXY"
         app:layout_constraintEnd_toEndOf="parent"
@@ -59,7 +59,7 @@
         android:layout_height="130dp"
         android:layout_marginEnd="32dp"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="32dp"
         android:background="@android:color/transparent"
         android:scaleType="fitXY"
         app:layout_constraintEnd_toStartOf="@+id/imgBtnCard3"
@@ -72,12 +72,98 @@
         android:layout_width="100dp"
         android:layout_height="130dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="32dp"
         android:background="@android:color/transparent"
         android:scaleType="fitXY"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbarMain"
         app:srcCompat="@drawable/back_02" />
 
+    <com.webianks.library.scroll_choice.ScrollChoice
+        android:id="@+id/scrollMoney"
+        android:layout_width="100dp"
+        android:layout_height="140dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:scroll_atmospheric="true"
+        app:scroll_background_color="#ffffe6"
+        app:scroll_indicator="true"
+        app:scroll_indicator_color="#FFF"
+        app:scroll_indicator_size="1dp"
+        app:scroll_item_align="center"
+        app:scroll_item_text_color="#00001a"
+        app:scroll_selected_item_background="#FFF"
+        app:scroll_selected_item_text_color="#ff0000" />
+
+    <TextView
+        android:id="@+id/textView"
+        style="@android:style/Widget.TextView.SpinnerItem"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:fontFamily="@font/aldrich"
+        android:text="@string/txtViewMoney"
+        app:layout_constraintBottom_toTopOf="@+id/scrollMoney"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/constraintLayout"
+        android:layout_width="0dp"
+        android:layout_height="140dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/scrollMoney"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <TextView
+            android:id="@+id/txtViewNotification"
+            android:layout_width="0dp"
+            android:layout_height="38dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:fontFamily="@font/aldrich"
+            android:hint="@string/txtViewNotification"
+            android:textAlignment="center"
+            android:textColorHint="@android:color/holo_red_dark"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/btnPlay"
+            android:layout_width="132dp"
+            android:layout_height="47dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:elevation="0dp"
+            android:text="@string/btnPlay"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/txtViewCurrentPoint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:fontFamily="@font/alfa_slab_one"
+            android:text="100$"
+            android:textColor="#b303ff03"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toTopOf="@+id/btnPlay"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+    </android.support.constraint.ConstraintLayout>
 
 </android.support.constraint.ConstraintLayout>
