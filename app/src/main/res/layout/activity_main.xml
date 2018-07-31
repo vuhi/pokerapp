@@ -2,6 +2,7 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:background="@drawable/background"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
@@ -81,32 +82,24 @@
 
     <com.webianks.library.scroll_choice.ScrollChoice
         android:id="@+id/scrollMoney"
-        android:layout_width="100dp"
+        android:layout_width="180dp"
         android:layout_height="140dp"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
+        android:fadeScrollbars="true"
+        android:fadingEdge="horizontal|vertical"
+        android:soundEffectsEnabled="false"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:scroll_atmospheric="true"
-        app:scroll_background_color="#ffffe6"
+        app:scroll_background_color="@color/common_google_signin_btn_text_dark_disabled"
         app:scroll_indicator="true"
         app:scroll_indicator_color="#FFF"
         app:scroll_indicator_size="1dp"
         app:scroll_item_align="center"
         app:scroll_item_text_color="#00001a"
-        app:scroll_selected_item_background="#FFF"
+        app:scroll_selected_item_background="#78bacd83"
         app:scroll_selected_item_text_color="#ff0000" />
-
-    <TextView
-        android:id="@+id/textView"
-        style="@android:style/Widget.TextView.SpinnerItem"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:fontFamily="@font/aldrich"
-        android:text="@string/txtViewMoney"
-        app:layout_constraintBottom_toTopOf="@+id/scrollMoney"
-        app:layout_constraintEnd_toEndOf="parent" />
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/constraintLayout"
