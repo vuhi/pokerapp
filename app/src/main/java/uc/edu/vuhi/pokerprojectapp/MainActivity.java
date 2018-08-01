@@ -1,12 +1,17 @@
 package uc.edu.vuhi.pokerprojectapp;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.DragEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -23,12 +28,14 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnItemSelected;
+import butterknife.OnTouch;
 import uc.edu.vuhi.pokerprojectapp.DTO.Card;
 import uc.edu.vuhi.pokerprojectapp.DTO.Deck;
 import uc.edu.vuhi.pokerprojectapp.DTO.Hand;
 import uc.edu.vuhi.pokerprojectapp.DTO.UserDTO;
 import uc.edu.vuhi.pokerprojectapp.UTIL.Utility;
 import android.content.Intent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -47,7 +54,10 @@ public class MainActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
     private FirebaseFirestore mDatabase;
-    private boolean isPlayed = false;
+
+    private boolean isPlayed;
+    private boolean isDrawed = false;
+
     private List<ImageButton> imgButtons;
     private Card card;
     private Deck deck;
@@ -62,8 +72,14 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.txtViewNotification)
     TextView txtViewNotification;
 
-    @BindView(R.id.btnPlay)
-    Button btnPlay;
+    @BindView(R.id.btnDraw)
+    Button btnDraw;
+
+    @BindView(R.id.btnEvaluate)
+    Button btnEvaluate;
+
+    @BindView(R.id.imgBtnCard)
+    ImageButton imgBtnCard;
 
     @BindView(R.id.imgBtnCard1)
     ImageButton imgBtnCard1;
@@ -76,9 +92,6 @@ public class MainActivity extends AppCompatActivity {
 
     @BindView(R.id.imgBtnCard4)
     ImageButton imgBtnCard4;
-
-    @BindView(R.id.imgBtnCard5)
-    ImageButton imgBtnCard5;
 
     List<String> datas = new ArrayList<>();
 
@@ -95,102 +108,15 @@ public class MainActivity extends AppCompatActivity {
         card = new Card();
         deck = new Deck(this);
         hand = new Hand();
-        imgButtons = Arrays.asList(imgBtnCard1, imgBtnCard2, imgBtnCard3, imgBtnCard4, imgBtnCard5);
+        imgButtons = Arrays.asList(imgBtnCard, imgBtnCard1, imgBtnCard2, imgBtnCard3, imgBtnCard4);
 
         loadDatas();
-        setBackCardImage();
-    }
-
-    private void setBackCardImage(){
-        //Set img
-        for (ImageButton imageButton : imgButtons) {
-            imageButton.setImageResource(getRandomBackCardImage());
-            imageButton.setEnabled(false);
-        }
-    }
-
-    private int getRandomBackCardImage(){
-        //Generate random number 0-5
-        Random r = new Random();
-        String index = String.valueOf(r.nextInt(5));
-        //Retrieve location of img by string name
-        int cardBackImgId = this.getResources().getIdentifier("back_0"+index, "drawable", this.getPackageName());
-        return cardBackImgId;
-    }
-
-    @OnClick({R.id.imgBtnCard1, R.id.imgBtnCard2, R.id.imgBtnCard3, R.id.imgBtnCard4,R.id.imgBtnCard5})
-    public void discardCard(View aView){
-        //Check the state of the card in hand
-        //This card is on hold
-        //->>>String id = aView.getTag()
-        if(!hand.cards[0].getIsDiscard()){
-            //discard it by showing the card back
-            hand.cards[0].setIsDiscard(true);
-            imgBtnCard1.setImageResource(getRandomBackCardImage());
-        }
-        //This card is already discard
-        else {
-            //hold the card by showing the card face
-            hand.cards[0].setIsDiscard(false);
-            imgBtnCard1.setImageResource(hand.cards[0].getCardImageId());
-        }
-    }
-
-    @OnClick(R.id.btnPlay)
-    public void play(){
-        //User play
-        isPlayed = true;
-        btnPlay.setText("DRAW");
-        //Shuffle card
-        deck.shuffle();
-        //Deal card 5 times to hand
-        for (int i = 0; i < imgButtons.size(); i++) {
-        card = deck.deal();
-            hand.PlaceCardInHand(card, i);
-            //Set img of card in hand
-            imgButtons.get(i).setImageResource(card.getCardImageId());
-        }
-        btnPlay.setEnabled(false);
-        scrollMoney.setSelectedItemPosition(0);
-        //Enable card to hold or discard
-        for (ImageButton imageButton : imgButtons) {
-            imageButton.setEnabled(true);
-        }
-    }
-
-    private void loadDatas() {
-        datas.add("Select Bet");
-        datas.add("$10");
-        datas.add("$20");
-        datas.add("$30");
-        datas.add("$40");
-        datas.add("$50");
-        datas.add("$60");
-        datas.add("$70");
-        datas.add("$80");
-        datas.add("$90");
-        datas.add("$100");
-        scrollMoney.addItems(datas,0);
-        scrollMoney.setOnItemSelectedListener(new ScrollChoice.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(ScrollChoice scrollChoice, int position, String name) {
-                if(isPlayed){
-                    if(position == 0){
-                        btnPlay.setEnabled(false);
-                    }
-                    else {
-                        btnPlay.setEnabled(true);
-                    }
-                }
-                txtViewNotification.setText(name);
-            }
-        });
+        initiateGame();
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-
         //Check if user is log in or not
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser == null) {
@@ -221,9 +147,6 @@ public class MainActivity extends AppCompatActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
-    /**
-     * Menu option handler
-     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -245,8 +168,174 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+
+    @OnClick({R.id.imgBtnCard, R.id.imgBtnCard1, R.id.imgBtnCard2, R.id.imgBtnCard3, R.id.imgBtnCard4})
+    public void discardCard(View aView){
+        //Get the tag value of the imageBtn, best way to due with multiple @Onclick
+        int id = Integer.parseInt(aView.getTag().toString());
+
+        //Check the state of the card in hand
+        //This card is on hold -> discard it by showing the card back
+        if(!hand.cards[id].getIsDiscard()){
+            hand.cards[id].setIsDiscard(true);
+            imgButtons.get(id).setImageResource(getRandomBackCardImage());
+        }
+        //This card is already discard -> hold the card by showing the card face
+        else {
+            hand.cards[id].setIsDiscard(false);
+            imgButtons.get(id).setImageResource(hand.cards[id].getCardImageId());
+        }
+
+        if(hand.hasAnyDisCard()){
+            btnEvaluate.setEnabled(false);
+        }else {
+            btnEvaluate.setEnabled(true);
+        }
+    }
+
+
+    @OnClick(R.id.btnDraw)
+    public void play() {
+
+        if(!isPlayed){
+            isPlayed = true;
+            deck.shuffle();
+            for (int i = 0; i < imgButtons.size(); i++) {
+                card = deck.deal();
+                hand.placeCardInHand(card, i);
+                //Set img of card in hand
+                imgButtons.get(i).setImageResource(card.getCardImageId());
+            }
+            //Enable imageButton to let user hold or discard card
+            for (ImageButton imageButton : imgButtons) {
+                imageButton.setEnabled(true);
+            }
+        }
+        else {
+            btnDraw.setEnabled(false);
+            deck.shuffle();
+            for (int i = 0; i < imgButtons.size(); i++) {
+                if(hand.cards[i].getIsDiscard()){
+                    card = deck.deal();
+                    hand.placeCardInHand(card, i);
+                    //Set img of card in hand
+                    imgButtons.get(i).setImageResource(card.getCardImageId());
+                }
+            }
+            //Enable imageButton to let user hold or discard card
+            for (ImageButton imageButton : imgButtons) {
+                imageButton.setEnabled(false);
+            }
+        }
+        btnEvaluate.setEnabled(true);
+
+    }
+
+    @OnClick(R.id.btnEvaluate)
+    public void evaluateResult(){
+        txtViewNotification.setText("SHOW RESULT");
+        hand.evaluateHand();
+        int score = hand.getScore();
+        String rank = hand.getRankName();
+        if(score > 0){
+            showResult("Congratulation", "You have "+rank);
+        }
+        else {
+            showResult("Sorry", rank);
+        }
+    }
+
+    private void showResult(String result, String message){
+        AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
+        alertDialog.setTitle(result);
+        alertDialog.setMessage(message);
+        Utility.delay(alertDialog, 2000);
+        //->> Apply decorator pattern here
+        initiateGame();
+        alertDialog.show();
+    }
+
+    private void initiateGame() {
+        isPlayed = false;
+        scrollMoney.setSelectedItemPosition(0);
+        btnDraw.setEnabled(false);
+        btnEvaluate.setEnabled(false);
+        setBackCardImage();
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private void loadDatas() {
+
+        btnEvaluate.setEnabled(false);
+        btnDraw.setEnabled(false);
+
+        datas.add("Select Bet");
+        datas.add("$10");
+        datas.add("$20");
+        datas.add("$30");
+        datas.add("$40");
+        datas.add("$50");
+        datas.add("$60");
+        datas.add("$70");
+        datas.add("$80");
+        datas.add("$90");
+        datas.add("$100");
+        scrollMoney.addItems(datas,0);
+
+        //Disable or enable the scroll choice
+        scrollMoney.setOnTouchListener(new ScrollChoice.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if(!isPlayed){
+                    return false;
+                }
+                else {
+                    return true;
+                }
+            }
+        });
+
+        scrollMoney.setOnItemSelectedListener(new ScrollChoice.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(ScrollChoice scrollChoice, int position, String name) {
+                    if(position == 0){
+                        if(!isPlayed){
+                            btnDraw.setEnabled(true);
+                        }
+                        else {
+                            btnDraw.setEnabled(false);
+                            btnEvaluate.setEnabled(false);
+                        }
+                    }
+                    else {
+                        if(isPlayed){
+                            btnEvaluate.setEnabled(true);
+                        }
+                        btnDraw.setEnabled(true);
+                    }
+
+                txtViewNotification.setText(name);
+            }
+        });
+    }
+
     private void logOut() {
         mAuth.signOut();
         Utility.sendTo(this, LoginActivity.class, true);
+    }
+    private void setBackCardImage(){
+        for (ImageButton imageButton : imgButtons) {
+            imageButton.setImageResource(getRandomBackCardImage());
+            imageButton.setEnabled(false);
+        }
+    }
+
+    private int getRandomBackCardImage(){
+        //Generate random number 0-5
+        Random r = new Random();
+        String index = String.valueOf(r.nextInt(5));
+        //Retrieve location of img by string name
+        int cardBackImgId = this.getResources().getIdentifier("back_0"+index, "drawable", this.getPackageName());
+        return cardBackImgId;
     }
 }

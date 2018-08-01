@@ -17,14 +17,32 @@ public class Hand {
     private int flushCount, straightCount, count1, count2;
     private Card pair1HighCard, pair2HighCard;
 
-    public void PlaceCardInHand(Card card, int position)
+    public int getScore(){
+        return score;
+    }
+
+    public String getRankName(){
+        return rankName;
+    }
+
+    public boolean hasAnyDisCard()
+    {
+        for (Card card: cards) {
+            if(card.getIsDiscard()){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void placeCardInHand(Card card, int position)
     {
         cards[position] = card;
     }
 
-    public void EvaluateHand()
+    public void evaluateHand()
     {
-        GetCardCounts();
+        getCardCounts();
         if (straightCount == 5 && flushCount == 5)
         {
             rank = Rank.StraightFlush;
@@ -90,7 +108,7 @@ public class Hand {
         }
     }
 
-    private void GetCardCounts()
+    private void getCardCounts()
     {
         Boolean useC1 = false, useC2 = false;
         // initialize counts
