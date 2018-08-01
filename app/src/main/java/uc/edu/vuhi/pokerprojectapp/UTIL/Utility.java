@@ -4,8 +4,14 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.ConnectivityManager;
 import android.os.Handler;
 import android.support.v7.app.AlertDialog;
+
+import com.google.firebase.auth.FirebaseAuth;
+
+import uc.edu.vuhi.pokerprojectapp.LoginActivity;
+import uc.edu.vuhi.pokerprojectapp.MainActivity;
 
 public final class Utility {
 
@@ -18,7 +24,7 @@ public final class Utility {
         }
     }
 
-    public static void delay(final AlertDialog dialog, int time){
+    public static void delay(final AlertDialog dialog, int time, Runnable myFunction){
         final Handler handler  = new Handler();
         final Runnable runnable = new Runnable() {
             @Override
@@ -36,5 +42,8 @@ public final class Utility {
             }
         });
         handler.postDelayed(runnable, time);
+        if(myFunction != null){
+            handler.postDelayed(myFunction, time);
+        }
     }
 }

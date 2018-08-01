@@ -97,14 +97,14 @@ public class Hand {
             {
                 rank = Rank.LowPair;
                 rankName = "Low Pair";
-                score = 0;
+                score = -1;
             }
         }
         else
         {
             rank = Rank.NoPair;
             rankName = "No Pair";
-            score = 0;
+            score = -1;
         }
     }
 

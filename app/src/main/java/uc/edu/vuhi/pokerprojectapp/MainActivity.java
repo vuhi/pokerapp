@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.drawable.Drawable;
+import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
@@ -17,9 +18,12 @@ import android.view.MenuItem;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.webianks.library.scroll_choice.ScrollChoice;
@@ -54,9 +58,11 @@ public class MainActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
     private FirebaseFirestore mDatabase;
+    private FirebaseUser currentUser;
+    private int currentPoint;
 
     private boolean isPlayed;
-    private boolean isDrawed = false;
+    private int currentBetOption;
 
     private List<ImageButton> imgButtons;
     private Card card;
@@ -93,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.imgBtnCard4)
     ImageButton imgBtnCard4;
 
-    List<String> datas = new ArrayList<>();
+    private List<String> betOptions;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,8 +123,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+        currentUser = mAuth.getCurrentUser();
         //Check if user is log in or not
-        FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser == null) {
             Utility.sendTo(MainActivity.this, LoginActivity.class, true);
         }
@@ -131,6 +137,10 @@ public class MainActivity extends AppCompatActivity {
                         //User does not update record when register
                         if(!task.getResult().exists()){
                             Utility.sendTo(MainActivity.this, SetUpActivity.class, false);
+                        }
+                        else {
+                            currentPoint = task.getResult().getLong("point").intValue();
+                            txtViewNotification.setText("$"+String.valueOf(currentPoint));
                         }
                     }
                     else {
@@ -233,25 +243,44 @@ public class MainActivity extends AppCompatActivity {
 
     @OnClick(R.id.btnEvaluate)
     public void evaluateResult(){
-        txtViewNotification.setText("SHOW RESULT");
         hand.evaluateHand();
         int score = hand.getScore();
         String rank = hand.getRankName();
-        if(score > 0){
-            showResult("Congratulation", "You have "+rank);
-        }
-        else {
-            showResult("Sorry", rank);
-        }
+
+        currentPoint = currentBetOption*score + currentPoint;
+        mDatabase.collection("Users").document(currentUser.getUid()).update("point", currentPoint).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if(task.isSuccessful()) {
+                    //User win
+                    if(score > 0){
+                        showResult("Congratulation", "You have " + rank);
+                    }
+                    //User lose
+                    else {
+                        showResult("Sorry, you lose", rank);
+                    }
+                    txtViewNotification.setText("$" + String.valueOf(currentPoint));
+                }
+                //Need to have broadcast receiver for network connection
+            }
+        });
     }
 
     private void showResult(String result, String message){
         AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
         alertDialog.setTitle(result);
         alertDialog.setMessage(message);
-        Utility.delay(alertDialog, 2000);
-        //->> Apply decorator pattern here
-        initiateGame();
+
+        Runnable myFunction = new Runnable() {
+            public void run() {
+                initiateGame();
+            }
+        };
+        Utility.delay(alertDialog, 3100, myFunction);
+
+        //Set the position of dialog
+        alertDialog.getWindow().getAttributes().verticalMargin = 0.4F;
         alertDialog.show();
     }
 
@@ -269,18 +298,8 @@ public class MainActivity extends AppCompatActivity {
         btnEvaluate.setEnabled(false);
         btnDraw.setEnabled(false);
 
-        datas.add("Select Bet");
-        datas.add("$10");
-        datas.add("$20");
-        datas.add("$30");
-        datas.add("$40");
-        datas.add("$50");
-        datas.add("$60");
-        datas.add("$70");
-        datas.add("$80");
-        datas.add("$90");
-        datas.add("$100");
-        scrollMoney.addItems(datas,0);
+        betOptions = Arrays.asList("Select Bet","$10","$20","$30","$50","$80","$100");
+        scrollMoney.addItems(betOptions,0);
 
         //Disable or enable the scroll choice
         scrollMoney.setOnTouchListener(new ScrollChoice.OnTouchListener() {
@@ -308,13 +327,18 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                     else {
-                        if(isPlayed){
-                            btnEvaluate.setEnabled(true);
+                        currentBetOption = Integer.parseInt(betOptions.get(position).replace("$",""));
+                        //Check if the fund is enough to bet
+                        if(currentBetOption > currentPoint){
+                            Toast.makeText(MainActivity.this, "Insufficient bet option" , Toast.LENGTH_SHORT).show();
+                            btnDraw.setEnabled(false);
+                        }else {
+                            if(isPlayed){
+                                btnEvaluate.setEnabled(true);
+                            }
+                            btnDraw.setEnabled(true);
                         }
-                        btnDraw.setEnabled(true);
                     }
-
-                txtViewNotification.setText(name);
             }
         });
     }

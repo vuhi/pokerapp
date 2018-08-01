@@ -149,7 +149,7 @@ public class LoginActivity extends AppCompatActivity {
                                 if (task.isSuccessful()) {
                                     Toast.makeText(LoginActivity.this, "An email has sent to reset your password!", Toast.LENGTH_SHORT).show();
                                     //Delay dialog with "time"
-                                    Utility.delay(dialog, 3000);
+                                    Utility.delay(dialog, 3000, null);
                                 } else {
                                     Toast.makeText(LoginActivity.this, "Fail to send reset password email!", Toast.LENGTH_SHORT).show();
                                 }
