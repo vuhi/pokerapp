@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.Uri;
+import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.app.AlertDialog;
@@ -48,8 +49,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.lang.reflect.Array;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
 import java.util.function.Consumer;
@@ -59,6 +64,7 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseFirestore mDatabase;
     private FirebaseUser currentUser;
+    private DocumentReference currentUserQuery;
     private int currentPoint;
 
     private boolean isPlayed;
@@ -130,7 +136,8 @@ public class MainActivity extends AppCompatActivity {
         }
         //User log in
         else{
-            mDatabase.collection("Users").document(currentUser.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            currentUserQuery = mDatabase.collection("Users").document(currentUser.getUid());
+            currentUserQuery.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                     if(task.isSuccessful()){
@@ -138,8 +145,29 @@ public class MainActivity extends AppCompatActivity {
                         if(!task.getResult().exists()){
                             Utility.sendTo(MainActivity.this, SetUpActivity.class, false);
                         }
+                        //User entered information
                         else {
-                            currentPoint = task.getResult().getLong("point").intValue();
+                            LocalDate currentDate = LocalDate.now();
+                            //First time login +1000
+                            if(task.getResult().getString("timeLog") == null) {
+                                currentPoint = 1000;
+                                currentUserQuery.update("point", currentPoint);
+                                currentUserQuery.update("timeLog", currentDate.toString());
+                                Toast.makeText(MainActivity.this, "First time login, +$1000",Toast.LENGTH_LONG).show();
+                            }
+                            else {
+                                //Daily login +100
+                                if (LocalDate.parse(task.getResult().getString("timeLog")).isBefore(currentDate)) {
+                                    currentPoint = task.getResult().getLong("point").intValue() + 100;
+                                    currentUserQuery.update("point", currentPoint);
+                                    currentUserQuery.update("timeLog", currentDate.toString());
+                                    Toast.makeText(MainActivity.this, "First time login, +$1000", Toast.LENGTH_LONG).show();
+                                }
+                                //Login multiple times a day
+                                else {
+                                    currentPoint = task.getResult().getLong("point").intValue();
+                                }
+                            }
                             txtViewNotification.setText("$"+String.valueOf(currentPoint));
                         }
                     }
@@ -169,8 +197,7 @@ public class MainActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
 
             case R.id.btnRechargeToken:
-                //Pop up dialog
-                Toast.makeText(MainActivity.this, "RechargeToken clicked", Toast.LENGTH_LONG).show();
+                rechargeToken();
                 return super.onOptionsItemSelected(item);
 
             default:
@@ -178,6 +205,49 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public void rechargeToken(){
+        AlertDialog.Builder mBuilder = new AlertDialog.Builder(MainActivity.this);
+        View mView = getLayoutInflater().inflate(R.layout.recharge_token, null);
+
+        final EditText txtAnswer = (EditText) mView.findViewById(R.id.txtAnswer);
+        Button btnSubmitAnswer = (Button) mView.findViewById(R.id.btnSubmitAnswer);
+
+        //Dismiss dialog
+        mBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        });
+
+        //Create view for dialog
+        mBuilder.setView(mView);
+        final AlertDialog dialog = mBuilder.create();
+        dialog.show();
+
+        btnSubmitAnswer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String answer = txtAnswer.getText().toString();
+                if(answer.trim().equalsIgnoreCase("tomorrow")){
+                    currentPoint = currentPoint + 500;
+                    currentUserQuery.update("point", currentPoint).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if(task.isSuccessful()) {
+                                txtViewNotification.setText("$" + String.valueOf(currentPoint));
+                                Toast.makeText(MainActivity.this, "Correct! +500", Toast.LENGTH_LONG).show();
+                                Utility.delay(dialog, 2000, null);
+                            }
+                        }
+                    });
+                }
+                else {
+                    Toast.makeText(MainActivity.this, "Incorrect!", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+    }
 
     @OnClick({R.id.imgBtnCard, R.id.imgBtnCard1, R.id.imgBtnCard2, R.id.imgBtnCard3, R.id.imgBtnCard4})
     public void discardCard(View aView){
@@ -198,8 +268,10 @@ public class MainActivity extends AppCompatActivity {
 
         if(hand.hasAnyDisCard()){
             btnEvaluate.setEnabled(false);
+            btnDraw.setEnabled(true);
         }else {
             btnEvaluate.setEnabled(true);
+            btnDraw.setEnabled(false);
         }
     }
 
@@ -220,6 +292,7 @@ public class MainActivity extends AppCompatActivity {
             for (ImageButton imageButton : imgButtons) {
                 imageButton.setEnabled(true);
             }
+            btnDraw.setEnabled(false);
         }
         else {
             btnDraw.setEnabled(false);
@@ -248,7 +321,7 @@ public class MainActivity extends AppCompatActivity {
         String rank = hand.getRankName();
 
         currentPoint = currentBetOption*score + currentPoint;
-        mDatabase.collection("Users").document(currentUser.getUid()).update("point", currentPoint).addOnCompleteListener(new OnCompleteListener<Void>() {
+        currentUserQuery.update("point", currentPoint).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if(task.isSuccessful()) {
@@ -362,4 +435,5 @@ public class MainActivity extends AppCompatActivity {
         int cardBackImgId = this.getResources().getIdentifier("back_0"+index, "drawable", this.getPackageName());
         return cardBackImgId;
     }
+
 }

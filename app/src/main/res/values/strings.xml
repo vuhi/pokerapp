@@ -25,4 +25,8 @@
     <string name="imgBtnCard2">2</string>
     <string name="imgBtnCard3">3</string>
     <string name="imgBtnCard4">4</string>
+    <string name="txtRechargeTokenTitle">Recharge Token</string>
+    <string name="txtViewQuestion">What is always coming, but never arrives?</string>
+    <string name="txtAnswer">Please answer the question</string>
+
 </resources>

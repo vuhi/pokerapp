@@ -1,5 +1,7 @@
 package uc.edu.vuhi.pokerprojectapp.DTO;
 
+import java.util.Date;
+
 /**
  * User has Id, email, password, nickname, point
  */
@@ -10,6 +12,7 @@ public class UserDTO {
     private String nickname;
     private String imagePath;
     private int point;
+    private String timeLog;
 
     public int getId() {
         return id;
@@ -51,6 +54,14 @@ public class UserDTO {
         this.point = point;
     }
 
+    public String getTimeLog() {
+        return timeLog;
+    }
+
+    public void setTimeLog(String timeLog) {
+        this.timeLog = timeLog;
+    }
+
     /**
      * Empty constructor, create a empty UserDTO
      */
@@ -65,13 +76,9 @@ public class UserDTO {
         this.email = email;
         this.nickname = nickname;
         this.imagePath = imagePath;
-        this.point = 100;
+        this.point = 0;
+        this.timeLog = null;
     }
 
-    public UserDTO(String email, String nickname){
-        this.email = email;
-        this.nickname = nickname;
-        this.point = 100;
-    }
 
 }

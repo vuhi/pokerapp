@@ -114,7 +114,7 @@
         app:layout_constraintEnd_toStartOf="@+id/constraintLayout2"
         app:layout_constraintStart_toEndOf="@+id/constraintLayout"
         app:scroll_atmospheric="true"
-        app:scroll_background_color="@color/common_google_signin_btn_text_dark_disabled"
+        app:scroll_background_color="@color/colorAccent"
         app:scroll_indicator="true"
         app:scroll_indicator_color="#FFF"
         app:scroll_indicator_size="1dp"
