@@ -19,7 +19,6 @@ public class Card {
     private final Suit suit;
     private Context context;
     private int imageId;
-    private boolean isDiscard = false;
 
     public Card()
     {
@@ -50,14 +49,6 @@ public class Card {
     public int getCardImageId()
     {
         return imageId;
-    }
-
-    public boolean getIsDiscard(){
-        return isDiscard;
-    }
-
-    public void setIsDiscard(boolean bool){
-        this.isDiscard = bool;
     }
 
     @Override

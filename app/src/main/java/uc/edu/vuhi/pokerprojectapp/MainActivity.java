@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -45,6 +46,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -71,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
     private int currentBetOption;
 
     private List<ImageButton> imgButtons;
+    private List<ImageView> imgViewDiscards;
     private Card card;
     private Deck deck;
     private Hand hand;
@@ -85,10 +88,10 @@ public class MainActivity extends AppCompatActivity {
     TextView txtViewNotification;
 
     @BindView(R.id.btnDraw)
-    Button btnDraw;
+    ImageButton btnDraw;
 
     @BindView(R.id.btnEvaluate)
-    Button btnEvaluate;
+    ImageButton btnEvaluate;
 
     @BindView(R.id.imgBtnCard)
     ImageButton imgBtnCard;
@@ -104,6 +107,21 @@ public class MainActivity extends AppCompatActivity {
 
     @BindView(R.id.imgBtnCard4)
     ImageButton imgBtnCard4;
+
+    @BindView(R.id.imgViewDiscard)
+    ImageView imgViewDiscard;
+
+    @BindView(R.id.imgViewDiscard1)
+    ImageView imgViewDiscard1;
+
+    @BindView(R.id.imgViewDiscard2)
+    ImageView imgViewDiscard2;
+
+    @BindView(R.id.imgViewDiscard3)
+    ImageView imgViewDiscard3;
+
+    @BindView(R.id.imgViewDiscard4)
+    ImageView imgViewDiscard4;
 
     private List<String> betOptions;
 
@@ -121,6 +139,7 @@ public class MainActivity extends AppCompatActivity {
         deck = new Deck(this);
         hand = new Hand();
         imgButtons = Arrays.asList(imgBtnCard, imgBtnCard1, imgBtnCard2, imgBtnCard3, imgBtnCard4);
+        imgViewDiscards =  Arrays.asList(imgViewDiscard, imgViewDiscard1, imgViewDiscard2, imgViewDiscard3, imgViewDiscard4);
 
         loadDatas();
         initiateGame();
@@ -253,25 +272,32 @@ public class MainActivity extends AppCompatActivity {
     public void discardCard(View aView){
         //Get the tag value of the imageBtn, best way to due with multiple @Onclick
         int id = Integer.parseInt(aView.getTag().toString());
+        String tag = imgViewDiscards.get(id).getTag().toString();
 
         //Check the state of the card in hand
         //This card is on hold -> discard it by showing the card back
-        if(!hand.cards[id].getIsDiscard()){
-            hand.cards[id].setIsDiscard(true);
+        if(tag.trim().equalsIgnoreCase("hold")){
+            imgViewDiscards.get(id).setTag("discard");
+            imgViewDiscards.get(id).setImageResource(getUnLoveIcon());
             imgButtons.get(id).setImageResource(getRandomBackCardImage());
         }
         //This card is already discard -> hold the card by showing the card face
         else {
-            hand.cards[id].setIsDiscard(false);
+            imgViewDiscards.get(id).setTag("hold");
+            imgViewDiscards.get(id).setImageResource(getLoveIcon());
             imgButtons.get(id).setImageResource(hand.cards[id].getCardImageId());
         }
 
-        if(hand.hasAnyDisCard()){
-            btnEvaluate.setEnabled(false);
-            btnDraw.setEnabled(true);
-        }else {
-            btnEvaluate.setEnabled(true);
-            btnDraw.setEnabled(false);
+        for(ImageView imageView: imgViewDiscards){
+            if(imgViewDiscards.get(id).getTag().toString().equalsIgnoreCase("discard")){
+                setBtnEvaluateStatus(false);
+                setBtnEvaluateStatus(false);
+                setBtnDrawStatus(true);
+                break;
+            }else {
+                setBtnEvaluateStatus(true);
+                setBtnDrawStatus(false);
+            }
         }
     }
 
@@ -281,6 +307,7 @@ public class MainActivity extends AppCompatActivity {
 
         if(!isPlayed){
             isPlayed = true;
+            setVisibilityDiscardIcon(true);
             deck.shuffle();
             for (int i = 0; i < imgButtons.size(); i++) {
                 card = deck.deal();
@@ -292,13 +319,13 @@ public class MainActivity extends AppCompatActivity {
             for (ImageButton imageButton : imgButtons) {
                 imageButton.setEnabled(true);
             }
-            btnDraw.setEnabled(false);
+            setBtnDrawStatus(false);
         }
         else {
-            btnDraw.setEnabled(false);
+            setBtnDrawStatus(false);
             deck.shuffle();
             for (int i = 0; i < imgButtons.size(); i++) {
-                if(hand.cards[i].getIsDiscard()){
+                if(imgViewDiscards.get(i).getTag().toString().equalsIgnoreCase("discard")){
                     card = deck.deal();
                     hand.placeCardInHand(card, i);
                     //Set img of card in hand
@@ -309,8 +336,9 @@ public class MainActivity extends AppCompatActivity {
             for (ImageButton imageButton : imgButtons) {
                 imageButton.setEnabled(false);
             }
+            initiateImageViewDiscard();
         }
-        btnEvaluate.setEnabled(true);
+        setBtnEvaluateStatus(true);
 
     }
 
@@ -360,16 +388,18 @@ public class MainActivity extends AppCompatActivity {
     private void initiateGame() {
         isPlayed = false;
         scrollMoney.setSelectedItemPosition(0);
-        btnDraw.setEnabled(false);
-        btnEvaluate.setEnabled(false);
+        setBtnDrawStatus(false);
+        setBtnEvaluateStatus(false);
         setBackCardImage();
+        initiateImageViewDiscard();
+        setVisibilityDiscardIcon(false);
     }
 
     @SuppressLint("ClickableViewAccessibility")
     private void loadDatas() {
 
-        btnEvaluate.setEnabled(false);
-        btnDraw.setEnabled(false);
+        setBtnEvaluateStatus(false);
+        setBtnDrawStatus(false);
 
         betOptions = Arrays.asList("Select Bet","$10","$20","$30","$50","$80","$100");
         scrollMoney.addItems(betOptions,0);
@@ -392,11 +422,11 @@ public class MainActivity extends AppCompatActivity {
             public void onItemSelected(ScrollChoice scrollChoice, int position, String name) {
                     if(position == 0){
                         if(!isPlayed){
-                            btnDraw.setEnabled(true);
+                            setBtnDrawStatus(true);
                         }
                         else {
-                            btnDraw.setEnabled(false);
-                            btnEvaluate.setEnabled(false);
+                            setBtnDrawStatus(false);
+                            setBtnEvaluateStatus(false);
                         }
                     }
                     else {
@@ -404,12 +434,12 @@ public class MainActivity extends AppCompatActivity {
                         //Check if the fund is enough to bet
                         if(currentBetOption > currentPoint){
                             Toast.makeText(MainActivity.this, "Insufficient bet option" , Toast.LENGTH_SHORT).show();
-                            btnDraw.setEnabled(false);
+                            setBtnDrawStatus(false);
                         }else {
                             if(isPlayed){
-                                btnEvaluate.setEnabled(true);
+                                setBtnEvaluateStatus(true);
                             }
-                            btnDraw.setEnabled(true);
+                            setBtnDrawStatus(true);
                         }
                     }
             }
@@ -427,6 +457,20 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void setVisibilityDiscardIcon(boolean bool){
+        if(bool){
+            for(ImageView imageView: imgViewDiscards){
+                imageView.setVisibility(View.VISIBLE);
+            }
+        }
+        else {
+            for(ImageView imageView: imgViewDiscards){
+                imageView.setVisibility(View.INVISIBLE);
+            }
+        }
+
+    }
+
     private int getRandomBackCardImage(){
         //Generate random number 0-5
         Random r = new Random();
@@ -435,5 +479,65 @@ public class MainActivity extends AppCompatActivity {
         int cardBackImgId = this.getResources().getIdentifier("back_0"+index, "drawable", this.getPackageName());
         return cardBackImgId;
     }
+
+    private void initiateImageViewDiscard(){
+        for(ImageView imageView: imgViewDiscards){
+            imageView.setTag("Hold");
+            imageView.setImageResource(getLoveIcon());
+        }
+    }
+
+    private int getLoveIcon(){
+        int loveId = this.getResources().getIdentifier("love", "drawable", this.getPackageName());
+        return loveId;
+    }
+
+    private int getUnLoveIcon(){
+        int unLoveId = this.getResources().getIdentifier("un_love", "drawable", this.getPackageName());
+        return unLoveId;
+    }
+
+    private int getBtnDrawIcon(boolean bool){
+        if(bool){
+            int enable = this.getResources().getIdentifier("draw_2", "drawable", this.getPackageName());
+            return enable;
+        }else {
+            int disable = this.getResources().getIdentifier("draw_2_disable", "drawable", this.getPackageName());
+            return disable;
+        }
+
+    }
+
+    private int getBtnEvaluateIcon(boolean bool){
+        if(bool){
+            int enable = this.getResources().getIdentifier("call", "drawable", this.getPackageName());
+            return enable;
+        }else {
+            int disable = this.getResources().getIdentifier("call_disable", "drawable", this.getPackageName());
+            return disable;
+        }
+
+    }
+
+    private void setBtnDrawStatus(Boolean bool){
+        if(bool){
+            btnDraw.setEnabled(bool);
+            btnDraw.setBackground(ContextCompat.getDrawable(this, getBtnDrawIcon(bool)));
+        }else {
+            btnDraw.setEnabled(bool);
+            btnDraw.setBackground(ContextCompat.getDrawable(this, getBtnDrawIcon(bool)));
+        }
+    }
+
+    private void setBtnEvaluateStatus(Boolean bool){
+        if(bool){
+            btnEvaluate.setEnabled(bool);
+            btnEvaluate.setBackground(ContextCompat.getDrawable(this, getBtnEvaluateIcon(bool)));
+        }else {
+            btnEvaluate.setEnabled(bool);
+            btnEvaluate.setBackground(ContextCompat.getDrawable(this, getBtnEvaluateIcon(bool)));
+        }
+    }
+
 
 }

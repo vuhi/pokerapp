@@ -20,11 +20,13 @@
     <string name="btnDraw">DRAW</string>
     <string name="btnEvaluate">EVALUATE</string>
     <string name="txtViewNotification">$100000</string>
+
     <string name="imgBtnCard">0</string>
     <string name="imgBtnCard1">1</string>
     <string name="imgBtnCard2">2</string>
     <string name="imgBtnCard3">3</string>
     <string name="imgBtnCard4">4</string>
+
     <string name="txtRechargeTokenTitle">Recharge Token</string>
     <string name="txtViewQuestion">What is always coming, but never arrives?</string>
     <string name="txtAnswer">Please answer the question</string>

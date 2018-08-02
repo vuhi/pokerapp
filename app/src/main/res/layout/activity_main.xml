@@ -30,80 +30,160 @@
             android:textSize="24sp"
             tools:layout_editor_absoluteX="334dp"
             tools:layout_editor_absoluteY="17dp" />
+    </android.support.v7.widget.Toolbar>
 
-        </android.support.v7.widget.Toolbar>
-
-    <ImageButton
-        android:id="@+id/imgBtnCard4"
-        android:layout_width="100dp"
-        android:layout_height="130dp"
-        android:layout_marginEnd="60dp"
-        android:layout_marginTop="32dp"
-        android:background="@android:color/transparent"
-        android:scaleType="fitXY"
-        android:tag="@string/imgBtnCard4"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imgBtnCard1"
-        app:srcCompat="@drawable/back_02" />
-
-    <ImageButton
-        android:id="@+id/imgBtnCard3"
-        android:layout_width="100dp"
-        android:layout_height="130dp"
-        android:layout_marginStart="60dp"
-        android:layout_marginTop="32dp"
-        android:background="@android:color/transparent"
-        android:scaleType="fitXY"
-        android:tag="@string/imgBtnCard3"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imgBtnCard1"
-        app:srcCompat="@drawable/back_02" />
-
-    <ImageButton
-        android:id="@+id/imgBtnCard2"
-        android:layout_width="100dp"
-        android:layout_height="130dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginTop="32dp"
-        android:background="@android:color/transparent"
-        android:scaleType="fitXY"
-        android:tag="@string/imgBtnCard2"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbarMain"
-        app:srcCompat="@drawable/back_02" />
-
-    <ImageButton
-        android:id="@+id/imgBtnCard1"
-        android:layout_width="100dp"
-        android:layout_height="130dp"
-        android:layout_marginEnd="32dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="32dp"
-        android:background="@android:color/transparent"
-        android:scaleType="fitXY"
-        android:tag="@string/imgBtnCard1"
-        app:layout_constraintEnd_toStartOf="@+id/imgBtnCard2"
-        app:layout_constraintStart_toEndOf="@+id/imgBtnCard"
-        app:layout_constraintTop_toBottomOf="@+id/toolbarMain"
-        app:srcCompat="@drawable/back_02" />
-
-    <ImageButton
-        android:id="@+id/imgBtnCard"
-        android:layout_width="100dp"
-        android:layout_height="130dp"
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/constraintLayout3"
+        android:layout_width="wrap_content"
+        android:layout_height="140dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="32dp"
-        android:background="@android:color/transparent"
-        android:scaleType="fitXY"
-        android:tag="@string/imgBtnCard"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbarMain"
-        app:srcCompat="@drawable/back_02" />
+        app:layout_constraintTop_toBottomOf="@+id/toolbarMain">
+
+        <ImageButton
+            android:id="@+id/imgBtnCard"
+            android:layout_width="99dp"
+            android:layout_height="130dp"
+            android:background="@android:color/transparent"
+            android:scaleType="fitXY"
+            android:tag="@string/imgBtnCard"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/back_02" />
+
+        <ImageView
+            android:id="@+id/imgViewDiscard"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:srcCompat="@drawable/love" />
+    </android.support.constraint.ConstraintLayout>
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/constraintLayout4"
+        android:layout_width="wrap_content"
+        android:layout_height="140dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="32dp"
+        app:layout_constraintEnd_toStartOf="@+id/constraintLayout5"
+        app:layout_constraintStart_toEndOf="@+id/constraintLayout3"
+        app:layout_constraintTop_toBottomOf="@+id/toolbarMain">
+
+        <ImageButton
+            android:id="@+id/imgBtnCard1"
+            android:layout_width="100dp"
+            android:layout_height="130dp"
+            android:background="@android:color/transparent"
+            android:scaleType="fitXY"
+            android:tag="@string/imgBtnCard1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/back_02" />
+
+        <ImageView
+            android:id="@+id/imgViewDiscard1"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:srcCompat="@drawable/love" />
+    </android.support.constraint.ConstraintLayout>
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/constraintLayout5"
+        android:layout_width="wrap_content"
+        android:layout_height="140dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="32dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbarMain">
+
+        <ImageButton
+            android:id="@+id/imgBtnCard2"
+            android:layout_width="100dp"
+            android:layout_height="130dp"
+            android:background="@android:color/transparent"
+            android:scaleType="fitXY"
+            android:tag="@string/imgBtnCard2"
+            app:srcCompat="@drawable/back_02" />
+
+        <ImageView
+            android:id="@+id/imgViewDiscard2"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:srcCompat="@drawable/love" />
+    </android.support.constraint.ConstraintLayout>
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/constraintLayout6"
+        android:layout_width="wrap_content"
+        android:layout_height="140dp"
+        android:layout_marginStart="64dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout4">
+
+        <ImageButton
+            android:id="@+id/imgBtnCard3"
+            android:layout_width="100dp"
+            android:layout_height="130dp"
+            android:background="@android:color/transparent"
+            android:scaleType="fitXY"
+            android:tag="@string/imgBtnCard3"
+            app:srcCompat="@drawable/back_02" />
+
+        <ImageView
+            android:id="@+id/imgViewDiscard3"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:srcCompat="@drawable/love" />
+    </android.support.constraint.ConstraintLayout>
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/constraintLayout7"
+        android:layout_width="wrap_content"
+        android:layout_height="140dp"
+        android:layout_marginEnd="64dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout4">
+
+        <ImageButton
+            android:id="@+id/imgBtnCard4"
+            android:layout_width="100dp"
+            android:layout_height="130dp"
+            android:background="@android:color/transparent"
+            android:scaleType="fitXY"
+            android:tag="@string/imgBtnCard4"
+            app:srcCompat="@drawable/back_02" />
+
+        <ImageView
+            android:id="@+id/imgViewDiscard4"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:srcCompat="@drawable/love" />
+
+    </android.support.constraint.ConstraintLayout>
 
     <com.webianks.library.scroll_choice.ScrollChoice
         android:id="@+id/scrollMoney"
-        android:layout_width="140dp"
-        android:layout_height="140dp"
+        android:layout_width="120dp"
+        android:layout_height="130dp"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
@@ -128,17 +208,18 @@
         android:layout_width="98dp"
         android:layout_height="140dp"
         android:layout_marginBottom="8dp"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="4dp"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/scrollMoney"
         app:layout_constraintStart_toStartOf="parent">
 
-        <Button
+        <ImageButton
             android:id="@+id/btnDraw"
             android:layout_width="0dp"
-            android:layout_height="71dp"
+            android:layout_height="100dp"
             android:layout_marginBottom="8dp"
+            android:background="@drawable/draw_2"
             android:elevation="0dp"
-            android:text="@string/btnDraw"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
@@ -150,20 +231,19 @@
         android:layout_width="106dp"
         android:layout_height="140dp"
         android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/scrollMoney">
 
-        <Button
+        <ImageButton
             android:id="@+id/btnEvaluate"
             android:layout_width="0dp"
-            android:layout_height="72dp"
+            android:layout_height="100dp"
             android:layout_marginBottom="8dp"
+            android:background="@drawable/call"
             android:elevation="0dp"
-            android:text="@string/btnEvaluate"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
     </android.support.constraint.ConstraintLayout>
-
 </android.support.constraint.ConstraintLayout>

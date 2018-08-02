@@ -25,16 +25,6 @@ public class Hand {
         return rankName;
     }
 
-    public boolean hasAnyDisCard()
-    {
-        for (Card card: cards) {
-            if(card.getIsDiscard()){
-                return true;
-            }
-        }
-        return false;
-    }
-
     public void placeCardInHand(Card card, int position)
     {
         cards[position] = card;
