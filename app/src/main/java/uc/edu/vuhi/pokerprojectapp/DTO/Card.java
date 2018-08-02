@@ -1,23 +1,24 @@
 package uc.edu.vuhi.pokerprojectapp.DTO;
 
-import android.net.Uri;
+import android.content.Context;
 
 public class Card {
 
     public static enum Face
     {
-        Two, Three, Four, Five, Six, Seven, Eight, Nine, Ten,
-        Jack, Queen, King, Ace
-    }
+        two, three, four, five, six, seven, eight, nine, ten,
+        jack, queen, king, ace
+    };
+
     public static enum Suit
     {
-        Clubs, Diamonds, Hearts, Spades
-    }
+        club, diamond, heart, spade
+    };
 
     private final Face face;
     private final Suit suit;
-    //private Uri image;
-    //private Uri cardbackimage = new ImageIcon(getClass().getResource("/cardimages/BlueBack.png"));
+    private Context context;
+    private int imageId;
 
     public Card()
     {
@@ -25,12 +26,15 @@ public class Card {
         this.suit = null;
     }
 
-    public Card(Face face, Suit suit)
+    public Card(Face face, Suit suit, Context context)
     {
         this.face = face;
         this.suit = suit;
-        //this.image = new ImageIcon(getClass().getResource("/cardimages/" + face + suit + ".png"));
+        this.context = context;
+        this.imageId = this.context.getResources().getIdentifier(face+"_"+suit, "drawable", this.context.getPackageName());
     }
+
+
 
     public Face getFace()
     {
@@ -42,20 +46,14 @@ public class Card {
         return suit;
     }
 
-    /*public ImageIcon getCardImage()
+    public int getCardImageId()
     {
-        return image;
+        return imageId;
     }
-
-    public ImageIcon getCardBackImage()
-    {
-        return cardbackimage;
-    }*/
 
     @Override
     public String toString()
     {
         return String.format("%s of %s", face,suit);
     }
-
 }

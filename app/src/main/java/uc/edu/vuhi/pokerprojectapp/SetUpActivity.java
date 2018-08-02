@@ -74,10 +74,13 @@ public class SetUpActivity extends AppCompatActivity {
     private String userId;
     private UserDTO retrievedUser;
     private boolean isImageChanged = false;
+    private boolean isUpdate = false;
+    private String currentNickName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_set_up);
         ButterKnife.bind(this);
         setSupportActionBar(toolbarSetUp);
@@ -104,10 +107,11 @@ public class SetUpActivity extends AppCompatActivity {
                         retrievedUser = task.getResult().toObject(UserDTO.class);
                         //set up
                         profileImg = Uri.parse(retrievedUser.getImagePath());
-                        txtNickName.setText(retrievedUser.getNickname());
+                        currentNickName = retrievedUser.getNickname();
+                        txtNickName.setText(currentNickName);
                         //Use glide library to set img view at run time.
                         Glide.with(SetUpActivity.this).load(retrievedUser.getImagePath()).into(circleImgProfile);
-                        btnSaveAccountSetting.setEnabled(true);
+                        isUpdate = true;
                     }
                     //No record
                     else {
@@ -122,16 +126,32 @@ public class SetUpActivity extends AppCompatActivity {
         });
     }
 
-    //Enable button when there is text inside
-    @OnTextChanged(R.id.txtNickName)
-    public void enable(){
-        if(!TextUtils.isEmpty(txtNickName.getText().toString())){
-            btnSaveAccountSetting.setEnabled(true);
+    @OnFocusChange(R.id.txtNickName)
+    public void dosome(View v, boolean hasFocus){
+        if(!hasFocus){
+            String stringNickName = txtNickName.getText().toString();
+            if(!stringNickName.equalsIgnoreCase(currentNickName) && !TextUtils.isEmpty(txtNickName.getText().toString())){
+                mDatabase.collection("Users").whereEqualTo("nickname", stringNickName).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if(task.isSuccessful()){
+                            if(!task.getResult().getDocuments().isEmpty()){
+                                Toast.makeText(SetUpActivity.this, "Nick name exist!" , Toast.LENGTH_LONG).show();
+                            }else {
+                                btnSaveAccountSetting.setEnabled(true);
+                            }
+                        }
+                        else {
+                            Toast.makeText(SetUpActivity.this, "An error occurred" , Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
+            }
         }else {
             btnSaveAccountSetting.setEnabled(false);
         }
-    }
 
+    }
     @OnClick(R.id.circleImgProfile)
     public void setProfile(){
         //Backward compatible check
@@ -146,61 +166,42 @@ public class SetUpActivity extends AppCompatActivity {
         }
     }
 
+
+
     @OnClick(R.id.btnSaveAccountSetting)
-    public void saveAccountSetting(){
+    public void saveAccountSetting() {
 
         final String stringNickName = txtNickName.getText().toString(); //Need to check unique NickName (Not implement yet)
-
-        /*mDatabase.collection("Users").whereEqualTo("nickname", stringNickName).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if(task.isSuccessful()){
-                    if(task.getResult().getDocuments().isEmpty()){
-                        Toast.makeText(SetUpActivity.this, "no data" , Toast.LENGTH_LONG).show();
-                    }else {
-                        Toast.makeText(SetUpActivity.this, "exist" , Toast.LENGTH_LONG).show();
-                    }
-                }
-                else {
-                    Toast.makeText(SetUpActivity.this, "An error occurred" , Toast.LENGTH_LONG).show();
-                }
-            }
-        });*/
-
-        if(isImageChanged){
-            if(!TextUtils.isEmpty(stringNickName) && profileImg != null){
+        if (isImageChanged) {
+            if (!TextUtils.isEmpty(stringNickName) && profileImg != null) {
                 probAccountSetting.setVisibility(View.VISIBLE);
-                StorageReference imgPath = mStorageRef.child("profile").child(userId+".jpg");
+                StorageReference imgPath = mStorageRef.child("profile").child(userId + ".jpg");
                 imgPath.putFile(profileImg).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                        if(task.isSuccessful()){
+                        if (task.isSuccessful()) {
                             saveToDataBase(task, stringNickName);
-                        }
-                        else{
+                        } else {
                             String error = task.getException().getMessage();
                             Toast.makeText(SetUpActivity.this, "An error occurred while saving setting: " + error, Toast.LENGTH_LONG).show();
                         }
                         probAccountSetting.setVisibility(View.INVISIBLE);
                     }
                 });
-            }
-            else {
-                Toast.makeText(SetUpActivity.this, "Please fill in your information" , Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(SetUpActivity.this, "Please fill in your information", Toast.LENGTH_LONG).show();
             }
         }
         //User does not upload new img
         else {
             //Prevent user save information without select image
-            if(profileImg == null){
-                Toast.makeText(SetUpActivity.this, "Please update your image" , Toast.LENGTH_LONG).show();
-            }
-            else {
-                saveToDataBase( null, stringNickName);
+            if (profileImg == null) {
+                Toast.makeText(SetUpActivity.this, "Please update your image", Toast.LENGTH_LONG).show();
+            } else {
+                saveToDataBase(null, stringNickName);
             }
         }
     }
-
 
     private void saveToDataBase(@NonNull Task<UploadTask.TaskSnapshot> task, String stringNickName){
 
@@ -215,20 +216,26 @@ public class SetUpActivity extends AppCompatActivity {
             downloadPath = profileImg;
         }
 
-        UserDTO user = new UserDTO(mAuth.getCurrentUser().getEmail(),stringNickName, downloadPath.toString());
-        //Add user information to database
-        mDatabase.collection("Users").document(userId).set(user).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if(task.isSuccessful()){
-                    Toast.makeText(SetUpActivity.this, "Saving", Toast.LENGTH_LONG).show();
-                    Utility.sendTo(SetUpActivity.this, MainActivity.class, false);
-                } else {
-                    String error = task.getException().getMessage();
-                    Toast.makeText(SetUpActivity.this, "An error occurred while saving setting: " + error, Toast.LENGTH_LONG).show();
+        if(isUpdate){
+            mDatabase.collection("Users").document(userId).update("nickname", stringNickName);
+            mDatabase.collection("Users").document(userId).update("imagePath", downloadPath.toString());
+        }else {
+            UserDTO user = new UserDTO(mAuth.getCurrentUser().getEmail(),stringNickName, downloadPath.toString());
+            //Add user information to database
+            mDatabase.collection("Users").document(userId).set(user).addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    if(task.isSuccessful()){
+                        Toast.makeText(SetUpActivity.this, "Saving", Toast.LENGTH_LONG).show();
+                        Utility.sendTo(SetUpActivity.this, MainActivity.class, false);
+                    } else {
+                        String error = task.getException().getMessage();
+                        Toast.makeText(SetUpActivity.this, "An error occurred while saving setting: " + error, Toast.LENGTH_LONG).show();
+                    }
                 }
-            }
-        });
+            });
+        }
+        btnSaveAccountSetting.setEnabled(false);
     }
 
     @Override
