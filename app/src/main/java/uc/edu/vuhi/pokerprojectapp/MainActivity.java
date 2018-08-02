@@ -538,6 +538,4 @@ public class MainActivity extends AppCompatActivity {
             btnEvaluate.setBackground(ContextCompat.getDrawable(this, getBtnEvaluateIcon(bool)));
         }
     }
-
-
 }
