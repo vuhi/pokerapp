@@ -4,16 +4,14 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Build;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -22,28 +20,19 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnFocusChange;
-import butterknife.OnTextChanged;
 import de.hdodenhof.circleimageview.CircleImageView;
 import uc.edu.vuhi.pokerprojectapp.DTO.UserDTO;
 import uc.edu.vuhi.pokerprojectapp.UTIL.Utility;
@@ -67,13 +56,36 @@ public class SetUpActivity extends AppCompatActivity {
     @BindView(R.id.probAccountSetting)
     ProgressBar probAccountSetting;
 
+    /**
+     * Variable to store Uri of profile image, use as a flag for no image Uri
+     */
     private Uri profileImg = null;
+
+    /**
+     * Fire base storage instance, use to upload file to fire base
+     */
     private StorageReference mStorageRef;
+
+    /**
+     * Fire base Authentication instance
+     */
     private FirebaseAuth mAuth;
+
+    /**
+     * Fire base database instance, use to save information in fire base database
+     */
     private FirebaseFirestore mDatabase;
     private String userId;
     private UserDTO retrievedUser;
+
+    /**
+     * A flag to check if user select a new img
+     */
     private boolean isImageChanged = false;
+
+    /**
+     * A flag to check if user is updating information or initiating a new record
+     */
     private boolean isUpdate = false;
     private String currentNickName;
 
@@ -84,7 +96,7 @@ public class SetUpActivity extends AppCompatActivity {
         setContentView(R.layout.activity_set_up);
         ButterKnife.bind(this);
         setSupportActionBar(toolbarSetUp);
-        getSupportActionBar().setTitle("Account Setting Page");
+        getSupportActionBar().setTitle(R.string.accountSettingTitle);
         //Set up back button
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -98,6 +110,21 @@ public class SetUpActivity extends AppCompatActivity {
         loadingUserInformation();
     }
 
+    /**
+     * Handle go back button, to go back to main page
+     */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                //Return to previous activity
+                finish();
+                return super.onOptionsItemSelected(item);
+
+            default:
+                return false;
+        }
+    }
 
     /**
      * Select image from library or take a photo, then crop
@@ -113,6 +140,21 @@ public class SetUpActivity extends AppCompatActivity {
             }
         } else {
             imagePicker();
+        }
+    }
+
+    /**
+     * Handle permission for READ_EXTERNAL_STORAGE
+     */
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == READ_EXTERNAL_PERMISSION_REQUEST_CODE) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                imagePicker();
+            } else {
+                Toast.makeText(SetUpActivity.this, R.string.permissionDenied, Toast.LENGTH_LONG).show();
+            }
         }
     }
 
@@ -134,7 +176,7 @@ public class SetUpActivity extends AppCompatActivity {
                 isImageChanged = true;
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                 Exception error = result.getError();
-                Toast.makeText(SetUpActivity.this, "An error occurred while cropping image", Toast.LENGTH_LONG).show();
+                Toast.makeText(SetUpActivity.this, R.string.cropingImgError, Toast.LENGTH_LONG).show();
             }
         }
     }
@@ -149,19 +191,16 @@ public class SetUpActivity extends AppCompatActivity {
         if(!hasFocus){
             String stringNickName = txtNickName.getText().toString();
             if(!stringNickName.equals(currentNickName) && !TextUtils.isEmpty(stringNickName)){
-                mDatabase.collection("Users").whereEqualTo("nickname", stringNickName).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if(task.isSuccessful()){
-                            if(!task.getResult().getDocuments().isEmpty()){
-                                Toast.makeText(SetUpActivity.this, "Nick name exist!" , Toast.LENGTH_LONG).show();
-                            }else {
-                                btnSaveAccountSetting.setEnabled(true);
-                            }
+                mDatabase.collection("Users").whereEqualTo("nickname", stringNickName).get().addOnCompleteListener(task -> {
+                    if(task.isSuccessful()){
+                        if(!task.getResult().getDocuments().isEmpty()){
+                            Toast.makeText(SetUpActivity.this, R.string.nickNameError , Toast.LENGTH_LONG).show();
+                        }else {
+                            btnSaveAccountSetting.setEnabled(true);
                         }
-                        else {
-                            Toast.makeText(SetUpActivity.this, "An error occurred" , Toast.LENGTH_LONG).show();
-                        }
+                    }
+                    else {
+                        Toast.makeText(SetUpActivity.this, R.string.genericError , Toast.LENGTH_LONG).show();
                     }
                 });
             }
@@ -181,27 +220,24 @@ public class SetUpActivity extends AppCompatActivity {
             if (!TextUtils.isEmpty(stringNickName) && profileImg != null) {
                 probAccountSetting.setVisibility(View.VISIBLE);
                 StorageReference imgPath = mStorageRef.child("profile").child(userId + ".jpg");
-                imgPath.putFile(profileImg).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                        if (task.isSuccessful()) {
-                            saveToDataBase(task, stringNickName);
-                        } else {
-                            String error = task.getException().getMessage();
-                            Toast.makeText(SetUpActivity.this, "An error occurred while saving setting: " + error, Toast.LENGTH_LONG).show();
-                        }
-                        probAccountSetting.setVisibility(View.INVISIBLE);
+                imgPath.putFile(profileImg).addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        saveToDataBase(task, stringNickName);
+                    } else {
+                        String error = task.getException().getMessage();
+                        Toast.makeText(SetUpActivity.this, R.string.genericError + error, Toast.LENGTH_LONG).show();
                     }
+                    probAccountSetting.setVisibility(View.INVISIBLE);
                 });
             } else {
-                Toast.makeText(SetUpActivity.this, "Please fill in your information", Toast.LENGTH_LONG).show();
+                Toast.makeText(SetUpActivity.this, R.string.fillInRemainder, Toast.LENGTH_LONG).show();
             }
         }
         //User does not upload new img
         else {
             //Prevent user save information without select image
             if (profileImg == null) {
-                Toast.makeText(SetUpActivity.this, "Please update your image", Toast.LENGTH_LONG).show();
+                Toast.makeText(SetUpActivity.this, R.string.undateImgReminder, Toast.LENGTH_LONG).show();
             } else {
                 saveToDataBase(null, stringNickName);
             }
@@ -213,31 +249,28 @@ public class SetUpActivity extends AppCompatActivity {
      */
     private void loadingUserInformation() {
         //Retrieve user information when loading activity
-        mDatabase.collection("Users").document(userId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if(task.isSuccessful()){
-                    //There is a record of user in database
-                    if(task.getResult().exists()){
-                        //Retrieve information
-                        retrievedUser = task.getResult().toObject(UserDTO.class);
-                        //set up
-                        profileImg = Uri.parse(retrievedUser.getImagePath());
-                        currentNickName = retrievedUser.getNickname();
-                        txtNickName.setText(currentNickName);
-                        //Use glide library to set img view at run time.
-                        Glide.with(SetUpActivity.this).load(retrievedUser.getImagePath()).into(circleImgProfile);
-                        isUpdate = true;
-                    }
-                    //No record
-                    else {
-                        Toast.makeText(SetUpActivity.this, "Please fill in your information" , Toast.LENGTH_LONG).show();
-                        btnSaveAccountSetting.setEnabled(false);
-                    }
+        mDatabase.collection("Users").document(userId).get().addOnCompleteListener(task -> {
+            if(task.isSuccessful()){
+                //There is a record of user in database
+                if(task.getResult().exists()){
+                    //Retrieve information
+                    retrievedUser = task.getResult().toObject(UserDTO.class);
+                    //set up
+                    profileImg = Uri.parse(retrievedUser.getImagePath());
+                    currentNickName = retrievedUser.getNickname();
+                    txtNickName.setText(currentNickName);
+                    //Use glide library to set img view at run time.
+                    Glide.with(SetUpActivity.this).load(retrievedUser.getImagePath()).into(circleImgProfile);
+                    isUpdate = true;
                 }
+                //No record
                 else {
-                    Toast.makeText(SetUpActivity.this, R.string.genericError , Toast.LENGTH_LONG).show();
+                    Toast.makeText(SetUpActivity.this, R.string.fillInRemainder , Toast.LENGTH_LONG).show();
+                    btnSaveAccountSetting.setEnabled(false);
                 }
+            }
+            else {
+                Toast.makeText(SetUpActivity.this, R.string.genericError , Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -262,67 +295,38 @@ public class SetUpActivity extends AppCompatActivity {
         if(isUpdate){
             mDatabase.collection("Users").document(userId).update("imagePath", downloadPath.toString());
             mDatabase.collection("Users").document(userId)
-                .update("nickname", stringNickName).addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if(!task.isSuccessful()){
-                            Toast.makeText(SetUpActivity.this, R.string.genericError , Toast.LENGTH_LONG).show();
-                        }
+                .update("nickname", stringNickName).addOnCompleteListener(task1 -> {
+                    if(!task1.isSuccessful()){
+                        Toast.makeText(SetUpActivity.this, R.string.genericError , Toast.LENGTH_LONG).show();
                     }
                 });
 
         }
         //This is a new user initiation
         else {
+            //Initiate a new usrDTO
             UserDTO user = new UserDTO(mAuth.getCurrentUser().getEmail(),stringNickName, downloadPath.toString());
             //Add user information to database
-            mDatabase.collection("Users").document(userId).set(user).addOnCompleteListener(new OnCompleteListener<Void>() {
-                @Override
-                public void onComplete(@NonNull Task<Void> task) {
-                    if(task.isSuccessful()){
-                        Toast.makeText(SetUpActivity.this, "Saving", Toast.LENGTH_SHORT).show();
-                        Utility.sendTo(SetUpActivity.this, MainActivity.class, true);
-                    } else {
-                        String error = task.getException().getMessage();
-                        Toast.makeText(SetUpActivity.this, R.string.genericError + error, Toast.LENGTH_LONG).show();
-                    }
+            mDatabase.collection("Users").document(userId).set(user).addOnCompleteListener(task12 -> {
+                if(task12.isSuccessful()){
+                    Toast.makeText(SetUpActivity.this, R.string.saving, Toast.LENGTH_SHORT).show();
+                    Utility.sendTo(SetUpActivity.this, MainActivity.class, true);
+                } else {
+                    String error = task12.getException().getMessage();
+                    Toast.makeText(SetUpActivity.this, R.string.genericError + error, Toast.LENGTH_LONG).show();
                 }
             });
         }
         btnSaveAccountSetting.setEnabled(false);
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == READ_EXTERNAL_PERMISSION_REQUEST_CODE) {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                imagePicker();
-            } else {
-                Toast.makeText(SetUpActivity.this, "Permission Denied!", Toast.LENGTH_LONG).show();
-            }
-        }
-    }
-
+    /**
+     * Invoke CropImage library to crop image from a camera or phone storage
+     */
     private void imagePicker() {
         CropImage.activity()
             .setGuidelines(CropImageView.Guidelines.ON)
             .setAspectRatio(1, 1)
             .start(SetUpActivity.this);
-    }
-
-
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                //Return to previous activity
-                finish();
-                return super.onOptionsItemSelected(item);
-
-            default:
-                return false;
-        }
     }
 }
