@@ -17,10 +17,9 @@ public interface IService {
      * Attempt to login the user with the given username and password.
      * @param email
      * @param password
-     * @return true if successful, false if not
      * @throws Exception if there is an underlying error in the persistence mechanism.
      */
-    public boolean login(String email, String password) throws Exception;
+    public void login(String email, String password) throws Exception;
 
     /**
      * Retrieve the given user

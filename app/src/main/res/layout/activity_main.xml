@@ -128,7 +128,7 @@
         android:layout_width="wrap_content"
         android:layout_height="140dp"
         android:layout_marginStart="64dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="32dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/constraintLayout4">
 
@@ -156,7 +156,7 @@
         android:layout_width="wrap_content"
         android:layout_height="140dp"
         android:layout_marginEnd="64dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="32dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/constraintLayout4">
 
@@ -182,15 +182,19 @@
 
     <com.webianks.library.scroll_choice.ScrollChoice
         android:id="@+id/scrollMoney"
-        android:layout_width="120dp"
-        android:layout_height="130dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="24dp"
         android:fadeScrollbars="true"
         android:fadingEdge="horizontal|vertical"
         android:soundEffectsEnabled="false"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/constraintLayout2"
         app:layout_constraintStart_toEndOf="@+id/constraintLayout"
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout6"
         app:scroll_atmospheric="true"
         app:scroll_background_color="#3F25FB97"
         app:scroll_indicator="true"
@@ -204,18 +208,15 @@
     <android.support.constraint.ConstraintLayout
         android:id="@+id/constraintLayout"
         android:layout_width="110dp"
-        android:layout_height="140dp"
+        android:layout_height="141dp"
         android:layout_marginBottom="8dp"
-        android:layout_marginStart="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
         <com.varunest.sparkbutton.SparkButton
             android:id="@+id/btnDraw"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -232,7 +233,6 @@
         android:layout_width="110dp"
         android:layout_height="140dp"
         android:layout_marginBottom="8dp"
-        android:layout_marginEnd="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
@@ -240,7 +240,6 @@
             android:id="@+id/btnEvaluate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
