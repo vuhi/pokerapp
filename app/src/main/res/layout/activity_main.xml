@@ -11,7 +11,7 @@
         android:id="@+id/toolbarMain"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@android:color/holo_blue_dark"
+        android:background="@color/colorAccent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -59,7 +59,7 @@
             android:layout_height="30dp"
             android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:srcCompat="@drawable/love" />
     </android.support.constraint.ConstraintLayout>
 
@@ -91,7 +91,7 @@
             android:layout_height="30dp"
             android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:srcCompat="@drawable/love" />
     </android.support.constraint.ConstraintLayout>
 
@@ -119,7 +119,7 @@
             android:layout_height="30dp"
             android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:srcCompat="@drawable/love" />
     </android.support.constraint.ConstraintLayout>
 
@@ -147,7 +147,7 @@
             android:layout_height="30dp"
             android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:srcCompat="@drawable/love" />
     </android.support.constraint.ConstraintLayout>
 
@@ -175,7 +175,7 @@
             android:layout_height="30dp"
             android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:srcCompat="@drawable/love" />
 
     </android.support.constraint.ConstraintLayout>
@@ -185,8 +185,6 @@
         android:layout_width="120dp"
         android:layout_height="130dp"
         android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
         android:fadeScrollbars="true"
         android:fadingEdge="horizontal|vertical"
         android:soundEffectsEnabled="false"
@@ -205,45 +203,52 @@
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/constraintLayout"
-        android:layout_width="98dp"
+        android:layout_width="110dp"
         android:layout_height="140dp"
         android:layout_marginBottom="8dp"
-        android:layout_marginStart="4dp"
+        android:layout_marginStart="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/scrollMoney"
         app:layout_constraintStart_toStartOf="parent">
 
-        <ImageButton
+        <com.varunest.sparkbutton.SparkButton
             android:id="@+id/btnDraw"
-            android:layout_width="0dp"
-            android:layout_height="100dp"
-            android:layout_marginBottom="8dp"
-            android:background="@drawable/draw_2"
-            android:elevation="0dp"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:sparkbutton_animationSpeed="0.8"
+            app:sparkbutton_iconSize="90dp"
+            app:sparkbutton_inActiveImage="@drawable/draw_2_disable"
+            app:sparkbutton_primaryColor="@color/primary_color"
+            app:sparkbutton_secondaryColor="@color/secondary_color"></com.varunest.sparkbutton.SparkButton>
 
     </android.support.constraint.ConstraintLayout>
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/constraintLayout2"
-        android:layout_width="106dp"
+        android:layout_width="110dp"
         android:layout_height="140dp"
         android:layout_marginBottom="8dp"
+        android:layout_marginEnd="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/scrollMoney">
+        app:layout_constraintEnd_toEndOf="parent">
 
-        <ImageButton
+        <com.varunest.sparkbutton.SparkButton
             android:id="@+id/btnEvaluate"
-            android:layout_width="0dp"
-            android:layout_height="100dp"
-            android:layout_marginBottom="8dp"
-            android:background="@drawable/call"
-            android:elevation="0dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:sparkbutton_iconSize="90dp"
+            app:sparkbutton_inActiveImage="@drawable/call_disable"
+            app:sparkbutton_primaryColor="@color/primary_color"
+            app:sparkbutton_secondaryColor="@color/secondary_color"></com.varunest.sparkbutton.SparkButton>
+
     </android.support.constraint.ConstraintLayout>
+
 </android.support.constraint.ConstraintLayout>

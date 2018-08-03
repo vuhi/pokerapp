@@ -30,5 +30,22 @@
     <string name="txtRechargeTokenTitle">Recharge Token</string>
     <string name="txtViewQuestion">What is always coming, but never arrives?</string>
     <string name="txtAnswer">Please answer the question</string>
+    <string name="firstTimeLoginString">First time login, +$1000</string>
+    <string name="dailyLoginString">Daily login +100</string>
+    <string name="genericError">An error occurred </string>
+    <string name="fillInRemainder">Please fill in your information</string>
+    <string name="confirmPasswordError">Confirm password does not match</string>
+    <string name="undateImgReminder">Please update your image</string>
+    <string name="accountSettingTitle">Account Setting Page</string>
+    <string name="permissionDenied">Permission Denied!</string>
+    <string name="cropingImgError">An error occurred while cropping image</string>
+    <string name="nickNameError">Nick name exist! Please find another nick name</string>
+    <string name="saving">Saving . . .</string>
+    <string name="enterEmailReminder">Please enter your email!</string>
+    <string name="welcome">Welcome</string>
+    <string name="errorRetrievingUser">An error occurred while retrieving user</string>
+    <string name="cancel">Cancel</string>
+    <string name="userWin">Congratulation, you win $</string>
+    <string name="userLose">Sorry, you lose $</string>
 
 </resources>

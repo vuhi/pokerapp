@@ -1,12 +1,8 @@
 package uc.edu.vuhi.pokerprojectapp;
 
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.os.Handler;
-import android.support.annotation.NonNull;
+import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -14,9 +10,6 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -46,6 +39,9 @@ public class LoginActivity extends AppCompatActivity {
     @BindView(R.id.btnResetPswd)
     Button btnResetPswd;
 
+    /**
+     * Fire base Authentication instance
+     */
     private  FirebaseAuth mAuth;
 
     @Override
@@ -62,34 +58,32 @@ public class LoginActivity extends AppCompatActivity {
         super.onStart();
 
         FirebaseUser currentUser = mAuth.getCurrentUser();
-
+        //If user is authenticated, send to the main page
         if(currentUser != null){
             Utility.sendTo(LoginActivity.this, MainActivity.class, true);
         }
     }
 
     /**
-     * login
+     * Button handler for login process
      */
     @OnClick(R.id.btnLogin)
     public void logIn() {
         String txtEmailString = txtEmail.getText().toString();
         String txtPasswordString = txtPassword.getText().toString();
-        //Check for empty
+        //Validate empty field
         if(!TextUtils.isEmpty(txtEmailString) && !TextUtils.isEmpty(txtPasswordString)){
             probLogin.setVisibility(View.VISIBLE);
-            mAuth.signInWithEmailAndPassword(txtEmailString, txtPasswordString).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                @Override
-                public void onComplete(@NonNull Task<AuthResult> task) {
-                    if(task.isSuccessful()){
-                        Utility.sendTo(LoginActivity.this, MainActivity.class, true);
-                    }
-                    else{
-                        String exceptionMsg = task.getException().getMessage();
-                        Toast.makeText(LoginActivity.this, "Error: " + exceptionMsg, Toast.LENGTH_SHORT).show();
-                    }
-                    probLogin.setVisibility(View.INVISIBLE);
+            //Sign in with Fire base auth
+            mAuth.signInWithEmailAndPassword(txtEmailString, txtPasswordString).addOnCompleteListener(task -> {
+                if(task.isSuccessful()){
+                    Utility.sendTo(LoginActivity.this, MainActivity.class, true);
                 }
+                else{
+                    String exceptionMsg = task.getException().getMessage();
+                    Toast.makeText(LoginActivity.this, "Error: " + exceptionMsg, Toast.LENGTH_SHORT).show();
+                }
+                probLogin.setVisibility(View.INVISIBLE);
             });
         }
         else{
@@ -98,7 +92,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     /**
-     * send to register activity
+     * Button handler to send to register activity
      */
     @OnClick(R.id.btnRegister)
     public void register() {
@@ -106,11 +100,11 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     /**
-     * pop up dialog when click
+     * Button handler to reset password
      */
     @OnClick(R.id.btnResetPswd)
     public void resetPswd() {
-        //Initiate dialog
+        //Initiate dialog with custom layout
         AlertDialog.Builder mBuilder = new AlertDialog.Builder(LoginActivity.this);
         View mView = getLayoutInflater().inflate(R.layout.dialog_reset_pswd, null);
 
@@ -118,13 +112,8 @@ public class LoginActivity extends AppCompatActivity {
         final EditText txtResetPasswdEmail = (EditText) mView.findViewById(R.id.txtResetPasswdEmail);
         Button btnResetPasswdSubmit = (Button) mView.findViewById(R.id.btnResetPasswdSubmit);
 
-        //Dismiss dialog
-        mBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                   @Override
-                   public void onClick(DialogInterface dialogInterface, int i) {
-                        dialogInterface.dismiss();
-                   }
-                });
+        //Initiate dismiss dialog button
+        mBuilder.setNegativeButton("Cancel", (dialogInterface, i) -> dialogInterface.dismiss());
 
         //Create view for dialog
         mBuilder.setView(mView);
@@ -132,30 +121,23 @@ public class LoginActivity extends AppCompatActivity {
         dialog.show();
 
         //Handle button
-        btnResetPasswdSubmit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                String resetPasswordEmail = txtResetPasswdEmail.getText().toString().trim();
-                if (TextUtils.isEmpty(resetPasswordEmail)) {
-                    Toast.makeText(getApplicationContext(), "Please enter your email!", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                mAuth.sendPasswordResetEmail(resetPasswordEmail)
-                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                if (task.isSuccessful()) {
-                                    Toast.makeText(LoginActivity.this, "An email has sent to reset your password!", Toast.LENGTH_SHORT).show();
-                                    //Delay dialog with "time"
-                                    Utility.delay(dialog, 3000, null);
-                                } else {
-                                    Toast.makeText(LoginActivity.this, "Fail to send reset password email!", Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        });
+        btnResetPasswdSubmit.setOnClickListener(v -> {
+            String resetPasswordEmail = txtResetPasswdEmail.getText().toString().trim();
+            //Validate empty field
+            if (TextUtils.isEmpty(resetPasswordEmail)) {
+                Toast.makeText(getApplicationContext(), R.string.enterEmailReminder, Toast.LENGTH_SHORT).show();
+                return;
             }
+            //Send email to reset password with fire base auth
+            mAuth.sendPasswordResetEmail(resetPasswordEmail).addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    Toast.makeText(LoginActivity.this, "An email has sent to reset your password!", Toast.LENGTH_SHORT).show();
+                    //Delay dialog with "time"
+                    Utility.delay(dialog, 3000, null);
+                } else {
+                    Toast.makeText(LoginActivity.this, "Fail to send reset password email!", Toast.LENGTH_SHORT).show();
+                }
+            });
         });
     }
 }

@@ -15,6 +15,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.function.Function;
 
 import uc.edu.vuhi.pokerprojectapp.LoginActivity;
 import uc.edu.vuhi.pokerprojectapp.MainActivity;
@@ -45,6 +46,7 @@ public final class Utility {
             @Override
             public void onDismiss(DialogInterface dialog) {
                 handler.removeCallbacks(runnable);
+                handler.removeCallbacks(myFunction);
             }
         });
         handler.postDelayed(runnable, time);
