@@ -28,6 +28,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.varunest.sparkbutton.SparkButton;
 import com.webianks.library.scroll_choice.ScrollChoice;
 
 import butterknife.BindView;
@@ -68,6 +69,7 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseUser currentUser;
     private DocumentReference currentUserQuery;
     private int currentPoint;
+    private int numCardDiscard;
 
     private boolean isPlayed;
     private int currentBetOption;
@@ -87,11 +89,11 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.txtViewNotification)
     TextView txtViewNotification;
 
-    @BindView(R.id.btnDraw)
-    ImageButton btnDraw;
+/*    @BindView(R.id.btnDraw)
+    ImageButton btnDraw;*/
 
     @BindView(R.id.btnEvaluate)
-    ImageButton btnEvaluate;
+    SparkButton btnEvaluate;
 
     @BindView(R.id.imgBtnCard)
     ImageButton imgBtnCard;
@@ -123,6 +125,9 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.imgViewDiscard4)
     ImageView imgViewDiscard4;
 
+    @BindView(R.id.btnDraw)
+    SparkButton btnDraw;
+
     private List<String> betOptions;
 
     @Override
@@ -141,7 +146,7 @@ public class MainActivity extends AppCompatActivity {
         imgButtons = Arrays.asList(imgBtnCard, imgBtnCard1, imgBtnCard2, imgBtnCard3, imgBtnCard4);
         imgViewDiscards =  Arrays.asList(imgViewDiscard, imgViewDiscard1, imgViewDiscard2, imgViewDiscard3, imgViewDiscard4);
 
-        loadDatas();
+        loadData();
         initiateGame();
     }
 
@@ -172,7 +177,7 @@ public class MainActivity extends AppCompatActivity {
                                 currentPoint = 1000;
                                 currentUserQuery.update("point", currentPoint);
                                 currentUserQuery.update("timeLog", currentDate.toString());
-                                Toast.makeText(MainActivity.this, "First time login, +$1000",Toast.LENGTH_LONG).show();
+                                Toast.makeText(MainActivity.this, R.string.firstTimeLoginString,Toast.LENGTH_LONG).show();
                             }
                             else {
                                 //Daily login +100
@@ -180,7 +185,7 @@ public class MainActivity extends AppCompatActivity {
                                     currentPoint = task.getResult().getLong("point").intValue() + 100;
                                     currentUserQuery.update("point", currentPoint);
                                     currentUserQuery.update("timeLog", currentDate.toString());
-                                    Toast.makeText(MainActivity.this, "First time login, +$1000", Toast.LENGTH_LONG).show();
+                                    Toast.makeText(MainActivity.this, R.string.dailyLoginString, Toast.LENGTH_LONG).show();
                                 }
                                 //Login multiple times a day
                                 else {
@@ -277,27 +282,25 @@ public class MainActivity extends AppCompatActivity {
         //Check the state of the card in hand
         //This card is on hold -> discard it by showing the card back
         if(tag.trim().equalsIgnoreCase("hold")){
+            numCardDiscard++;
             imgViewDiscards.get(id).setTag("discard");
             imgViewDiscards.get(id).setImageResource(getUnLoveIcon());
             imgButtons.get(id).setImageResource(getRandomBackCardImage());
         }
         //This card is already discard -> hold the card by showing the card face
         else {
+            numCardDiscard--;
             imgViewDiscards.get(id).setTag("hold");
             imgViewDiscards.get(id).setImageResource(getLoveIcon());
             imgButtons.get(id).setImageResource(hand.cards[id].getCardImageId());
         }
 
-        for(ImageView imageView: imgViewDiscards){
-            if(imgViewDiscards.get(id).getTag().toString().equalsIgnoreCase("discard")){
-                setBtnEvaluateStatus(false);
-                setBtnEvaluateStatus(false);
-                setBtnDrawStatus(true);
-                break;
-            }else {
-                setBtnEvaluateStatus(true);
-                setBtnDrawStatus(false);
-            }
+        if(numCardDiscard > 0) {
+            setBtnEvaluateStatus(false);
+            setBtnDrawStatus(true);
+        }else {
+            setBtnEvaluateStatus(true);
+            setBtnDrawStatus(false);
         }
     }
 
@@ -308,6 +311,9 @@ public class MainActivity extends AppCompatActivity {
         if(!isPlayed){
             isPlayed = true;
             setVisibilityDiscardIcon(true);
+
+            btnDraw.playAnimation();
+
             deck.shuffle();
             for (int i = 0; i < imgButtons.size(); i++) {
                 card = deck.deal();
@@ -323,6 +329,7 @@ public class MainActivity extends AppCompatActivity {
         }
         else {
             setBtnDrawStatus(false);
+            btnDraw.playAnimation();
             deck.shuffle();
             for (int i = 0; i < imgButtons.size(); i++) {
                 if(imgViewDiscards.get(i).getTag().toString().equalsIgnoreCase("discard")){
@@ -344,22 +351,23 @@ public class MainActivity extends AppCompatActivity {
 
     @OnClick(R.id.btnEvaluate)
     public void evaluateResult(){
+        btnEvaluate.playAnimation();
         hand.evaluateHand();
         int score = hand.getScore();
         String rank = hand.getRankName();
-
-        currentPoint = currentBetOption*score + currentPoint;
+        int scoreMoney = currentBetOption*score;
+        currentPoint = scoreMoney + currentPoint;
         currentUserQuery.update("point", currentPoint).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if(task.isSuccessful()) {
                     //User win
                     if(score > 0){
-                        showResult("Congratulation", "You have " + rank);
+                        showResult(rank, "Congratulation, you win $"+String.valueOf(scoreMoney));
                     }
                     //User lose
                     else {
-                        showResult("Sorry, you lose", rank);
+                        showResult(rank, "Sorry, you lose $"+String.valueOf(scoreMoney*-1));
                     }
                     txtViewNotification.setText("$" + String.valueOf(currentPoint));
                 }
@@ -372,14 +380,12 @@ public class MainActivity extends AppCompatActivity {
         AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
         alertDialog.setTitle(result);
         alertDialog.setMessage(message);
-
         Runnable myFunction = new Runnable() {
             public void run() {
                 initiateGame();
             }
         };
-        Utility.delay(alertDialog, 3100, myFunction);
-
+        Utility.delay(alertDialog, 2500, myFunction);
         //Set the position of dialog
         alertDialog.getWindow().getAttributes().verticalMargin = 0.4F;
         alertDialog.show();
@@ -387,20 +393,18 @@ public class MainActivity extends AppCompatActivity {
 
     private void initiateGame() {
         isPlayed = false;
+        numCardDiscard = 0;
         scrollMoney.setSelectedItemPosition(0);
         setBtnDrawStatus(false);
         setBtnEvaluateStatus(false);
         setBackCardImage();
         initiateImageViewDiscard();
         setVisibilityDiscardIcon(false);
+        btnDraw.setInactiveImage(R.drawable.draw_2_disable);
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    private void loadDatas() {
-
-        setBtnEvaluateStatus(false);
-        setBtnDrawStatus(false);
-
+    private void loadData() {
         betOptions = Arrays.asList("Select Bet","$10","$20","$30","$50","$80","$100");
         scrollMoney.addItems(betOptions,0);
 
@@ -422,7 +426,7 @@ public class MainActivity extends AppCompatActivity {
             public void onItemSelected(ScrollChoice scrollChoice, int position, String name) {
                     if(position == 0){
                         if(!isPlayed){
-                            setBtnDrawStatus(true);
+                            setBtnDrawStatus(false);
                         }
                         else {
                             setBtnDrawStatus(false);
@@ -521,21 +525,21 @@ public class MainActivity extends AppCompatActivity {
 
     private void setBtnDrawStatus(Boolean bool){
         if(bool){
+            btnDraw.setInactiveImage(R.drawable.draw_2);
             btnDraw.setEnabled(bool);
-            btnDraw.setBackground(ContextCompat.getDrawable(this, getBtnDrawIcon(bool)));
         }else {
+            btnDraw.setInactiveImage(R.drawable.draw_2_disable);
             btnDraw.setEnabled(bool);
-            btnDraw.setBackground(ContextCompat.getDrawable(this, getBtnDrawIcon(bool)));
         }
     }
 
     private void setBtnEvaluateStatus(Boolean bool){
         if(bool){
             btnEvaluate.setEnabled(bool);
-            btnEvaluate.setBackground(ContextCompat.getDrawable(this, getBtnEvaluateIcon(bool)));
+            btnEvaluate.setInactiveImage(R.drawable.call);
         }else {
             btnEvaluate.setEnabled(bool);
-            btnEvaluate.setBackground(ContextCompat.getDrawable(this, getBtnEvaluateIcon(bool)));
+            btnEvaluate.setInactiveImage(R.drawable.call_disable);
         }
     }
 }

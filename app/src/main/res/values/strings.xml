@@ -30,5 +30,7 @@
     <string name="txtRechargeTokenTitle">Recharge Token</string>
     <string name="txtViewQuestion">What is always coming, but never arrives?</string>
     <string name="txtAnswer">Please answer the question</string>
+    <string name="firstTimeLoginString">First time login, +$1000</string>
+    <string name="dailyLoginString">Daily login +100</string>
 
 </resources>

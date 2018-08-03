@@ -226,7 +226,7 @@ public class SetUpActivity extends AppCompatActivity {
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {
                     if(task.isSuccessful()){
-                        Toast.makeText(SetUpActivity.this, "Saving", Toast.LENGTH_LONG).show();
+                        Toast.makeText(SetUpActivity.this, "Saving", Toast.LENGTH_SHORT).show();
                         Utility.sendTo(SetUpActivity.this, MainActivity.class, false);
                     } else {
                         String error = task.getException().getMessage();
