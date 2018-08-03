@@ -194,14 +194,14 @@
         app:layout_constraintEnd_toStartOf="@+id/constraintLayout2"
         app:layout_constraintStart_toEndOf="@+id/constraintLayout"
         app:scroll_atmospheric="true"
-        app:scroll_background_color="@color/colorAccent"
+        app:scroll_background_color="#3F25FB97"
         app:scroll_indicator="true"
         app:scroll_indicator_color="#FFF"
         app:scroll_indicator_size="1dp"
         app:scroll_item_align="center"
         app:scroll_item_text_color="#00001a"
-        app:scroll_selected_item_background="#78bacd83"
-        app:scroll_selected_item_text_color="#ff0000" />
+        app:scroll_selected_item_background="#47e3f5a7"
+        app:scroll_selected_item_text_color="@color/colorAccent" />
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/constraintLayout"
