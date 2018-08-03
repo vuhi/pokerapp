@@ -95,42 +95,60 @@ public class SetUpActivity extends AppCompatActivity {
         mDatabase = FirebaseFirestore.getInstance();
         probAccountSetting.setVisibility(View.INVISIBLE);
         btnSaveAccountSetting.setEnabled(false);
-
-        //Retrieve user information when loading activity
-        mDatabase.collection("Users").document(userId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if(task.isSuccessful()){
-                    //There is a record of user in database
-                    if(task.getResult().exists()){
-                        //Retrieve information
-                        retrievedUser = task.getResult().toObject(UserDTO.class);
-                        //set up
-                        profileImg = Uri.parse(retrievedUser.getImagePath());
-                        currentNickName = retrievedUser.getNickname();
-                        txtNickName.setText(currentNickName);
-                        //Use glide library to set img view at run time.
-                        Glide.with(SetUpActivity.this).load(retrievedUser.getImagePath()).into(circleImgProfile);
-                        isUpdate = true;
-                    }
-                    //No record
-                    else {
-                        Toast.makeText(SetUpActivity.this, "Please fill in your information" , Toast.LENGTH_LONG).show();
-                        btnSaveAccountSetting.setEnabled(false);
-                    }
-                }
-                else {
-                    Toast.makeText(SetUpActivity.this, "An error occurred while retrieving user" , Toast.LENGTH_LONG).show();
-                }
-            }
-        });
+        loadingUserInformation();
     }
 
+
+    /**
+     * Select image from library or take a photo, then crop
+     */
+    @OnClick(R.id.circleImgProfile)
+    public void setProfile(){
+        //Backward compatible check
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+            if(ContextCompat.checkSelfPermission(SetUpActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
+                ActivityCompat.requestPermissions(SetUpActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, READ_EXTERNAL_PERMISSION_REQUEST_CODE);
+            } else {
+                imagePicker();
+            }
+        } else {
+            imagePicker();
+        }
+    }
+
+    /**
+     * Get image uri to set to the place holder, turn on the flag isImageChanged
+     * @param requestCode - request code of image cropping
+     * @param resultCode - user allow or not
+     * @param data - contains image data
+     */
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+            if (resultCode == RESULT_OK) {
+                profileImg = result.getUri();
+                circleImgProfile.setImageURI(profileImg);
+                //Select new image
+                isImageChanged = true;
+            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+                Exception error = result.getError();
+                Toast.makeText(SetUpActivity.this, "An error occurred while cropping image", Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
+    /**
+     * Make sure user has a unique nickname (case sensitive), if not disable save button
+     * @param editText - txtNickName Edit text
+     * @param hasFocus - boolean represent focus of edit text
+     */
     @OnFocusChange(R.id.txtNickName)
-    public void dosome(View v, boolean hasFocus){
+    public void validateNickName(View editText, boolean hasFocus){
         if(!hasFocus){
             String stringNickName = txtNickName.getText().toString();
-            if(!stringNickName.equalsIgnoreCase(currentNickName) && !TextUtils.isEmpty(txtNickName.getText().toString())){
+            if(!stringNickName.equals(currentNickName) && !TextUtils.isEmpty(stringNickName)){
                 mDatabase.collection("Users").whereEqualTo("nickname", stringNickName).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -150,28 +168,15 @@ public class SetUpActivity extends AppCompatActivity {
         }else {
             btnSaveAccountSetting.setEnabled(false);
         }
-
-    }
-    @OnClick(R.id.circleImgProfile)
-    public void setProfile(){
-        //Backward compatible check
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
-            if(ContextCompat.checkSelfPermission(SetUpActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
-                ActivityCompat.requestPermissions(SetUpActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, READ_EXTERNAL_PERMISSION_REQUEST_CODE);
-            } else {
-                imagePicker();
-            }
-        } else {
-            imagePicker();
-        }
     }
 
-
-
+    /**
+     * Save user information to database
+     */
     @OnClick(R.id.btnSaveAccountSetting)
     public void saveAccountSetting() {
-
-        final String stringNickName = txtNickName.getText().toString(); //Need to check unique NickName (Not implement yet)
+        final String stringNickName = txtNickName.getText().toString();
+        //User upload new img
         if (isImageChanged) {
             if (!TextUtils.isEmpty(stringNickName) && profileImg != null) {
                 probAccountSetting.setVisibility(View.VISIBLE);
@@ -203,23 +208,72 @@ public class SetUpActivity extends AppCompatActivity {
         }
     }
 
-    private void saveToDataBase(@NonNull Task<UploadTask.TaskSnapshot> task, String stringNickName){
+    /**
+     * Set up user information if there is any when loading
+     */
+    private void loadingUserInformation() {
+        //Retrieve user information when loading activity
+        mDatabase.collection("Users").document(userId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if(task.isSuccessful()){
+                    //There is a record of user in database
+                    if(task.getResult().exists()){
+                        //Retrieve information
+                        retrievedUser = task.getResult().toObject(UserDTO.class);
+                        //set up
+                        profileImg = Uri.parse(retrievedUser.getImagePath());
+                        currentNickName = retrievedUser.getNickname();
+                        txtNickName.setText(currentNickName);
+                        //Use glide library to set img view at run time.
+                        Glide.with(SetUpActivity.this).load(retrievedUser.getImagePath()).into(circleImgProfile);
+                        isUpdate = true;
+                    }
+                    //No record
+                    else {
+                        Toast.makeText(SetUpActivity.this, "Please fill in your information" , Toast.LENGTH_LONG).show();
+                        btnSaveAccountSetting.setEnabled(false);
+                    }
+                }
+                else {
+                    Toast.makeText(SetUpActivity.this, R.string.genericError , Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+    }
 
+    /**
+     * Perform new user initiation or a update record in database
+     * @param task - task from fire-base when upload image
+     * @param stringNickName - user's nickname
+     */
+    private void saveToDataBase(@NonNull Task<UploadTask.TaskSnapshot> task, String stringNickName){
         Uri downloadPath;
-        //Upload new image
+        //User Upload new image
         if(task != null){
             downloadPath = task.getResult().getDownloadUrl();
             UserDTO user = new UserDTO(mAuth.getCurrentUser().getEmail(),stringNickName, downloadPath.toString());
         }
-        //Does not upload any image, use the old image retrieve from database
+        //User does not upload any image, use the old image retrieve from database
         else {
             downloadPath = profileImg;
         }
-
+        //This is an update operation
         if(isUpdate){
-            mDatabase.collection("Users").document(userId).update("nickname", stringNickName);
             mDatabase.collection("Users").document(userId).update("imagePath", downloadPath.toString());
-        }else {
+            mDatabase.collection("Users").document(userId)
+                .update("nickname", stringNickName).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if(!task.isSuccessful()){
+                            Toast.makeText(SetUpActivity.this, R.string.genericError , Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
+
+        }
+        //This is a new user initiation
+        else {
             UserDTO user = new UserDTO(mAuth.getCurrentUser().getEmail(),stringNickName, downloadPath.toString());
             //Add user information to database
             mDatabase.collection("Users").document(userId).set(user).addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -227,10 +281,10 @@ public class SetUpActivity extends AppCompatActivity {
                 public void onComplete(@NonNull Task<Void> task) {
                     if(task.isSuccessful()){
                         Toast.makeText(SetUpActivity.this, "Saving", Toast.LENGTH_SHORT).show();
-                        Utility.sendTo(SetUpActivity.this, MainActivity.class, false);
+                        Utility.sendTo(SetUpActivity.this, MainActivity.class, true);
                     } else {
                         String error = task.getException().getMessage();
-                        Toast.makeText(SetUpActivity.this, "An error occurred while saving setting: " + error, Toast.LENGTH_LONG).show();
+                        Toast.makeText(SetUpActivity.this, R.string.genericError + error, Toast.LENGTH_LONG).show();
                     }
                 }
             });
@@ -257,23 +311,7 @@ public class SetUpActivity extends AppCompatActivity {
             .start(SetUpActivity.this);
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
-            CropImage.ActivityResult result = CropImage.getActivityResult(data);
-            if (resultCode == RESULT_OK) {
-                profileImg = result.getUri();
-                circleImgProfile.setImageURI(profileImg);
-                //Select new image
-                isImageChanged = true;
-            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
-                Exception error = result.getError();
-                Toast.makeText(SetUpActivity.this, "An error occurred while cropping image", Toast.LENGTH_LONG).show();
-            }
-        }
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

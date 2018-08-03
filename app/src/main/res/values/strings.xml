@@ -32,5 +32,6 @@
     <string name="txtAnswer">Please answer the question</string>
     <string name="firstTimeLoginString">First time login, +$1000</string>
     <string name="dailyLoginString">Daily login +100</string>
+    <string name="genericError">An error occurred</string>
 
 </resources>

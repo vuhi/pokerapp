@@ -89,9 +89,6 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.txtViewNotification)
     TextView txtViewNotification;
 
-/*    @BindView(R.id.btnDraw)
-    ImageButton btnDraw;*/
-
     @BindView(R.id.btnEvaluate)
     SparkButton btnEvaluate;
 
@@ -138,7 +135,7 @@ public class MainActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseFirestore.getInstance();
         setSupportActionBar(toolbarMain);
-        getSupportActionBar().setTitle("Main Page");
+        getSupportActionBar().setTitle("Welcome");
 
         card = new Card();
         deck = new Deck(this);
